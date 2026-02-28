@@ -31,7 +31,7 @@
     @endif
 
     <div class="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-primary/20">
-        <div class="bg-gradient-to-r from-primary to-primary-dark p-4">
+        <div class=" from-primary to-primary-dark p-4">
             <div class="flex items-center gap-3">
                 <div class="bg-white/20 p-3 rounded-lg">
                     <svg class="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 20 20">
@@ -70,7 +70,7 @@
                                              alt="Foto" 
                                              class="w-10 h-10 rounded-full object-cover border-2 border-primary/30">
                                     @else
-                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-accent font-bold text-sm border-2 border-white shadow">
+                                        <div class="w-10 h-10 rounded-full  from-primary to-primary-dark flex items-center justify-center text-accent font-bold text-sm border-2 border-white shadow">
                                             {{ strtoupper(substr($estudiante->nombres, 0, 1)) }}{{ strtoupper(substr($estudiante->apellidos, 0, 1)) }}
                                         </div>
                                     @endif
