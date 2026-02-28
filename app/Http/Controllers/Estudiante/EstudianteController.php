@@ -11,6 +11,7 @@ use App\Models\Intento;
 use App\Models\Respuesta;
 use App\Services\AuditoriaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class EstudianteController extends Controller
@@ -18,7 +19,7 @@ class EstudianteController extends Controller
     public function dashboard()
     {
         $cursos = Curso::whereHas('matriculas', function ($q) {
-            $q->where('estudiante_id', auth()->id())->where('estado', 'activa');
+            $q->where('estudiante_id', Auth::id())->where('estado', 'activa');
         })->with(['docentes', 'periodo'])->get();
 
         // Cargar exámenes disponibles por curso
@@ -28,17 +29,17 @@ class EstudianteController extends Controller
                 ->where('fecha_inicio', '<=', now())
                 ->where('fecha_fin', '>=', now())
                 ->get();
-            
+
             // Contar exámenes no iniciados por el estudiante
-            $curso->examenesNuevos = $curso->examenesDisponibles->filter(function($examen) {
+            $curso->examenesNuevos = $curso->examenesDisponibles->filter(function ($examen) {
                 return !Intento::where('examen_id', $examen->id)
-                    ->where('estudiante_id', auth()->id())
+                    ->where('estudiante_id', Auth::id())
                     ->exists();
             })->count();
-            
+
             // Contar exámenes con intentos pendientes
             $curso->examenesEnProgreso = Intento::whereIn('examen_id', $curso->examenesDisponibles->pluck('id'))
-                ->where('estudiante_id', auth()->id())
+                ->where('estudiante_id', Auth::id())
                 ->where('estado', 'en_progreso')
                 ->count();
         }
@@ -50,7 +51,7 @@ class EstudianteController extends Controller
     {
         $curso = Curso::with(['docentes', 'periodo'])->findOrFail($curso);
 
-        $matriculado = $curso->estudiantes()->whereKey(auth()->id())->exists();
+        $matriculado = $curso->estudiantes()->whereKey(Auth::id())->exists();
         if (!$matriculado) {
             abort(403, 'No estás matriculado en este curso.');
         }
@@ -66,7 +67,7 @@ class EstudianteController extends Controller
     public function examenesDisponibles(int $curso)
     {
         $curso = Curso::findOrFail($curso);
-        $matriculado = $curso->estudiantes()->whereKey(auth()->id())->exists();
+        $matriculado = $curso->estudiantes()->whereKey(Auth::id())->exists();
         if (!$matriculado) {
             abort(403);
         }
@@ -75,8 +76,8 @@ class EstudianteController extends Controller
             ->where('estado', 'publicado')
             ->where('fecha_inicio', '<=', now())
             ->where('fecha_fin', '>=', now())
-            ->with(['intentos' => function($q) {
-                $q->where('estudiante_id', auth()->id())->orderBy('numero_intento', 'desc');
+            ->with(['intentos' => function ($q) {
+                $q->where('estudiante_id', Auth::id())->orderBy('numero_intento', 'desc');
             }])
             ->get();
 
@@ -89,7 +90,7 @@ class EstudianteController extends Controller
         $this->authorize('rendir', $examen);
 
         $intentoActivo = Intento::where('examen_id', $examen->id)
-            ->where('estudiante_id', auth()->id())
+            ->where('estudiante_id', Auth::id())
             ->where('estado', 'en_progreso')
             ->first();
 
@@ -98,7 +99,7 @@ class EstudianteController extends Controller
         }
 
         $intentosRealizados = Intento::where('examen_id', $examen->id)
-            ->where('estudiante_id', auth()->id())
+            ->where('estudiante_id', Auth::id())
             ->count();
 
         if ($intentosRealizados >= $examen->intentos_permitidos) {
@@ -110,7 +111,7 @@ class EstudianteController extends Controller
 
         $intento = Intento::create([
             'examen_id' => $examen->id,
-            'estudiante_id' => auth()->id(),
+            'estudiante_id' => Auth::id(),
             'numero_intento' => $numeroIntento,
             'inicio' => now(),
             'estado' => 'en_progreso',
@@ -125,7 +126,7 @@ class EstudianteController extends Controller
         $intento = Intento::with('respuestas')->findOrFail($intento);
         $examen = Examen::with('preguntas.alternativas')->findOrFail($examen);
 
-        if ($intento->estudiante_id !== auth()->id()) {
+        if ($intento->estudiante_id !== Auth::id()) {
             abort(403);
         }
 
@@ -158,7 +159,7 @@ class EstudianteController extends Controller
     {
         $intento = Intento::findOrFail($intento);
 
-        if ($intento->estudiante_id !== auth()->id() || !$intento->estaEnProgreso()) {
+        if ($intento->estudiante_id !== Auth::id() || !$intento->estaEnProgreso()) {
             abort(403);
         }
 
@@ -179,7 +180,7 @@ class EstudianteController extends Controller
     {
         $intento = Intento::with(['respuestas.alternativa', 'examen.preguntas'])->findOrFail($intento);
 
-        if ($intento->estudiante_id !== auth()->id()) {
+        if ($intento->estudiante_id !== Auth::id()) {
             abort(403);
         }
 
@@ -203,7 +204,7 @@ class EstudianteController extends Controller
         $examen = Examen::with('preguntas.alternativas')->findOrFail($examen);
         $curso = Curso::findOrFail($curso);
 
-        if ($intento->estudiante_id !== auth()->id()) {
+        if ($intento->estudiante_id !== Auth::id()) {
             abort(403);
         }
 
@@ -213,7 +214,7 @@ class EstudianteController extends Controller
     public function calificaciones()
     {
         $cursos = Curso::whereHas('matriculas', function ($q) {
-            $q->where('estudiante_id', auth()->id())->where('estado', 'activa');
+            $q->where('estudiante_id', Auth::id())->where('estado', 'activa');
         })->get();
 
         $calificacionesPorCurso = [];
@@ -225,7 +226,7 @@ class EstudianteController extends Controller
 
             foreach ($examenes as $examen) {
                 $intento = Intento::where('examen_id', $examen->id)
-                    ->where('estudiante_id', auth()->id())
+                    ->where('estudiante_id', Auth::id())
                     ->where('estado', 'finalizado')
                     ->orderBy('puntaje_obtenido', 'desc')
                     ->first();
@@ -253,13 +254,14 @@ class EstudianteController extends Controller
 
     public function perfil()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         return view('estudiante.perfil', compact('user'));
     }
 
     public function actualizarPerfil(UpdatePerfilRequest $request)
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
         $datos = $request->only(['telefono', 'direccion']);
 
         if ($request->hasFile('foto_perfil')) {

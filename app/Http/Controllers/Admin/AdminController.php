@@ -19,6 +19,7 @@ use App\Models\Periodo;
 use App\Models\User;
 use App\Services\AuditoriaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -106,7 +107,7 @@ class AdminController extends Controller
                 'user_id' => $user->id,
                 'rol_anterior' => $user->rol,
                 'rol_nuevo' => $datos['rol'],
-                'cambiado_por' => auth()->id(),
+                'cambiado_por' => Auth::id(),
             ]);
         }
 

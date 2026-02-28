@@ -15,12 +15,16 @@ use App\Models\Observacion;
 use App\Models\Pregunta;
 use App\Services\AuditoriaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class DocenteController extends Controller
 {
     public function dashboard()
     {
-        $cursos = auth()->user()->cursosDocente()->with('periodo')->get();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $cursos = $user->cursosDocente()->with('periodo')->get();
         return view('docente.dashboard', compact('cursos'));
     }
 
@@ -43,7 +47,7 @@ class DocenteController extends Controller
         $curso = Curso::findOrFail($curso);
         $this->authorize('gestionar', $curso);
         $preguntas = Pregunta::where('curso_id', $curso->id)
-            ->where('docente_id', auth()->id())
+            ->where('docente_id', Auth::id())
             ->with('alternativas')
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -65,7 +69,7 @@ class DocenteController extends Controller
 
         $datosPregunta = [
             'curso_id' => $curso->id,
-            'docente_id' => auth()->id(),
+            'docente_id' => Auth::id(),
             'texto' => $request->texto,
             'dificultad' => $request->dificultad,
             'puntaje' => $request->puntaje,
@@ -119,7 +123,7 @@ class DocenteController extends Controller
         if ($request->filled('alternativas')) {
             $pregunta->alternativas()->delete();
             $alternativaCorrectaIndex = $request->alternativa_correcta;
-            
+
             foreach ($request->alternativas as $index => $alt) {
                 $datosAlt = [
                     'pregunta_id' => $pregunta->id,
@@ -151,7 +155,7 @@ class DocenteController extends Controller
         $curso = Curso::findOrFail($curso);
         $this->authorize('gestionar', $curso);
         $examenes = Examen::where('curso_id', $curso->id)
-            ->where('docente_id', auth()->id())
+            ->where('docente_id', Auth::id())
             ->withCount('preguntas')
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -172,10 +176,10 @@ class DocenteController extends Controller
         $this->authorize('gestionar', $curso);
 
         $datos = $request->validated();
-        $datos['docente_id'] = auth()->id();
+        $datos['docente_id'] = Auth::id();
         $datos['curso_id'] = $curso->id;
         $datos['estado'] = 'creado';
-        
+
         $datos['orden_aleatorio_preguntas'] = $request->has('orden_aleatorio_preguntas');
         $datos['orden_aleatorio_alternativas'] = $request->has('orden_aleatorio_alternativas');
         $datos['mostrar_resultados'] = $request->has('mostrar_resultados');
@@ -200,14 +204,14 @@ class DocenteController extends Controller
     {
         $examen = Examen::findOrFail($examen);
         $this->authorize('update', $examen);
-        
+
         $datos = $request->validated();
         $datos['orden_aleatorio_preguntas'] = $request->has('orden_aleatorio_preguntas');
         $datos['orden_aleatorio_alternativas'] = $request->has('orden_aleatorio_alternativas');
         $datos['mostrar_resultados'] = $request->has('mostrar_resultados');
         $datos['permitir_revision'] = $request->has('permitir_revision');
         $datos['navegacion_libre'] = $request->has('navegacion_libre');
-        
+
         $examen->update($datos);
         AuditoriaService::registrar('actualizar_examen', 'Examen', $examen->id);
         return redirect()->route('docente.examenes', $curso)->with('status', 'Examen actualizado correctamente.');
@@ -219,7 +223,7 @@ class DocenteController extends Controller
         $this->authorize('update', $examen);
         $curso = Curso::findOrFail($curso);
         $preguntasDisponibles = Pregunta::where('curso_id', $curso->id)
-            ->where('docente_id', auth()->id())
+            ->where('docente_id', Auth::id())
             ->whereNotIn('id', $examen->preguntas->pluck('id'))
             ->get();
 
@@ -247,12 +251,12 @@ class DocenteController extends Controller
     {
         $examen = Examen::with('preguntas')->findOrFail($examen);
         $this->authorize('publicar', $examen);
-        
+
         if ($examen->preguntas->count() === 0) {
             return redirect()->route('docente.examenes', $curso)
                 ->with('error', 'No se puede publicar un examen sin preguntas. Asigna al menos una pregunta primero.');
         }
-        
+
         $examen->update(['estado' => 'publicado']);
         AuditoriaService::registrar('publicar_examen', 'Examen', $examen->id);
         return redirect()->route('docente.examenes', $curso)->with('status', 'Examen publicado correctamente.');
@@ -291,7 +295,7 @@ class DocenteController extends Controller
         $curso = Curso::findOrFail($curso);
         $this->authorize('gestionar', $curso);
         $observaciones = Observacion::where('curso_id', $curso->id)
-            ->where('docente_id', auth()->id())
+            ->where('docente_id', Auth::id())
             ->with('estudiante')
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -309,7 +313,7 @@ class DocenteController extends Controller
     public function guardarObservacion(StoreObservacionRequest $request, int $curso)
     {
         $observacion = Observacion::create([
-            'docente_id' => auth()->id(),
+            'docente_id' => Auth::id(),
             'estudiante_id' => $request->estudiante_id,
             'curso_id' => $curso,
             'texto' => $request->texto,

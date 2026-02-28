@@ -8,28 +8,46 @@
     <title>Colegio Max Planck</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Dancing+Script:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     @vite('resources/css/app.css')
     <style>
-        * {
-            font-family: 'Tangerine', 'Dancing Script', 'Brush Script MT', cursive !important;
+        .bg-primary {
+            background-color: #004f39;
         }
-        * {
-            font-family: 'Tangerine', 'Dancing Script', 'Brush Script MT', cursive !important;
+
+        .bg-primary-dark {
+            background-color: #151613;
         }
-        .bg-primary { background-color: #004f39; }
-        .bg-primary-dark { background-color: #151613; }
-        .bg-accent { background-color: #FFFACA; }
-        .text-primary { color: #004f39; }
-        .text-accent { color: #FFFACA; }
-        .border-primary { border-color: #004f39; }
-        .hover-primary:hover { background-color: #003d2d; }
+
+        .bg-accent {
+            background-color: #FFFACA;
+        }
+
+        .text-primary {
+            color: #004f39;
+        }
+
+        .text-accent {
+            color: #FFFACA;
+        }
+
+        .border-primary {
+            border-color: #004f39;
+        }
+
+        .hover-primary:hover {
+            background-color: #003d2d;
+        }
+
         .bg-pattern {
             background-image: url('{{ asset('image/fondo.png') }}');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
+
         .bg-main {
             background: linear-gradient(rgba(229, 231, 235, 0.95), rgba(229, 231, 235, 0.95)), url('{{ asset('image/fondo.png') }}');
             background-size: cover;
@@ -41,7 +59,7 @@
 
 <body class="w-full min-h-screen flex flex-col bg-main"
     @auth
-        @if(auth()->user()->esEstudiante() || auth()->user()->esDocente())
+@if (auth()->user()->esEstudiante() || auth()->user()->esDocente())
             <!-- Header Moderno para Estudiante/Docente -->
             <header class="bg-primary shadow-lg">
                 <div class="max-w-7xl mx-auto px-2 py-2">
@@ -50,8 +68,8 @@
                         <div class="flex items-center gap-4">
                             <img src="{{ asset('image/logo_1.png') }}" alt="Logo" class="h-12 w-12 object-contain bg-white rounded-full p-1">
                             <div>
-                                <h1 class="text-2xl font-bold text-accent tracking-wide">Colegio Max Planck</h1>
-                                <p class="text-sm text-accent">Sistema de Gestión Académica</p>
+                                <h1 class="text-lg font-bold text-accent tracking-wide font-serif-accent">Colegio Max Planck</h1>
+                                <p class="text-xs text-accent">Sistema de Gestión Académica</p>
                             </div>
                         </div>
                         
@@ -61,9 +79,13 @@
                                 <p class="text-sm font-semibold text-accent">{{ auth()->user()->nombreCompleto() }}</p>
                                 <p class="text-xs text-accent opacity-80 uppercase">{{ auth()->user()->rol }}</p>
                             </div>
-                            <div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-primary font-bold text-lg">
-                                {{ strtoupper(substr(auth()->user()->nombres, 0, 1)) }}
-                            </div>
+                            @if (auth()->user()->foto_perfil)
+                                <img src="{{ asset('storage/' . auth()->user()->foto_perfil) }}" alt="Foto" class="w-10 h-10 rounded-full object-cover border-2 border-accent shadow-md">
+                            @else
+                                <div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-primary font-bold text-lg">
+                                    {{ strtoupper(substr(auth()->user()->nombres, 0, 1)) }}
+                                </div>
+                            @endif
                             <a class="text-sm text-primary bg-accent hover:bg-yellow-200 px-4 py-2 rounded-lg font-semibold transition-all shadow-md"
                                 href="{{ route('logout') }}">Salir</a>
                         </div>
@@ -75,7 +97,7 @@
             <nav class="bg-primary-dark shadow-md">
                 <div class="max-w-7xl mx-auto px-4">
                     <div class="flex gap-2">
-                        @if(auth()->user()->esDocente())
+                        @if (auth()->user()->esDocente())
                             <a href="{{ route('docente.dashboard') }}" 
                                class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('docente.dashboard') ? 'border-accent bg-primary' : 'border-transparent' }}">
                                 <span class="flex items-center gap-2">
@@ -147,9 +169,13 @@
                                 <p class="text-sm font-semibold text-accent">{{ auth()->user()->nombreCompleto() }}</p>
                                 <p class="text-xs text-accent opacity-80 uppercase">{{ auth()->user()->rol }}</p>
                             </div>
-                            <div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-primary font-bold text-lg">
-                                {{ strtoupper(substr(auth()->user()->nombres, 0, 1)) }}
-                            </div>
+                            @if (auth()->user()->foto_perfil)
+                                <img src="{{ asset('storage/' . auth()->user()->foto_perfil) }}" alt="Foto" class="w-10 h-10 rounded-full object-cover border-2 border-accent shadow-md">
+                            @else
+                                <div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-primary font-bold text-lg">
+                                    {{ strtoupper(substr(auth()->user()->nombres, 0, 1)) }}
+                                </div>
+                            @endif
                             <a class="text-sm text-primary bg-accent hover:bg-yellow-200 px-4 py-2 rounded-lg font-semibold transition-all shadow-md"
                                 href="{{ route('logout') }}">Salir</a>
                         </div>
@@ -237,29 +263,33 @@
                     </div>
                 </div>
             </nav>
-        @endif
-    @endauth
-
+        @endif @endauth
     <main class="grow w-full max-w-7xl mx-auto p-4 md:p-6">
-        @if (session('status'))
-            <div class="mb-4 p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-r shadow-md flex items-center gap-3">
-                <svg class="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                </svg>
-                <span class="font-medium">{{ session('status') }}</span>
-            </div>
-        @endif
+    @if (session('status'))
+        <div
+            class="mb-4 p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-r shadow-md flex items-center gap-3">
+            <svg class="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd" />
+            </svg>
+            <span class="font-medium">{{ session('status') }}</span>
+        </div>
+    @endif
 
-        @if (session('error'))
-            <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-r shadow-md flex items-center gap-3">
-                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                </svg>
-                <span class="font-medium">{{ session('error') }}</span>
-            </div>
-        @endif
+    @if (session('error'))
+        <div
+            class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-r shadow-md flex items-center gap-3">
+            <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clip-rule="evenodd" />
+            </svg>
+            <span class="font-medium">{{ session('error') }}</span>
+        </div>
+    @endif
 
-        @yield('contenido')
+    @yield('contenido')
     </main>
 
     @yield('scripts')

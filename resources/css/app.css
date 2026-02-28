@@ -6,11 +6,24 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Tangerine', 'Dancing Script', 'Brush Script MT', system-ui;
-    --font-size-base: 0.90 rem;
+    --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    --font-serif: 'Playfair Display', 'Georgia', serif;
+    --font-decorative: 'Dancing Script', 'Tangerine', cursive;
 }
 
-* {
-    font-family: 'Tangerine', 'Dancing Script', 'Brush Script MT' !important;
-    font-size: 0.90 rem;
+/* Utilidades para tipografía serif (solo para títulos selectos) */
+.font-serif {
+    font-family: 'Playfair Display', 'Georgia', serif;
+}
+
+/* Utilidad para tipografía decorativa/cursiva (solo detalles puntuales) */
+.font-decorative {
+    font-family: 'Dancing Script', 'Tangerine', cursive;
+}
+
+/* Semi-bold + italic para títulos serif */
+.font-serif-accent {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-weight: 600;
+    font-style: italic;
 }
