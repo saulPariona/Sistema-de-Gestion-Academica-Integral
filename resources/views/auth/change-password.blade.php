@@ -2,11 +2,11 @@
 @section('contenido')
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="text-3xl font-bold text-primary mb-1">Cambiar Contraseña</h1>
-            <p class="text-gray-600">Actualiza tu contraseña de acceso al sistema</p>
+            <h1 class="text-2xl font-bold text-primary mb-1">Cambiar Contraseña</h1>
+            <em class="text-gray-600 text-sm">Actualiza tu contraseña de acceso al sistema</em>
         </div>
         <a href="{{ url()->previous() }}"
-            class="flex items-center gap-2 bg-white border-2 border-primary text-primary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary hover:text-accent transition-all shadow-md">
+            class="flex items-center gap-2 bg-white border-2 border-primary text-primary px-4 py-2 rounded-sm text-sm font-semibold hover:bg-primary hover:text-accent transition-all shadow-md">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -16,7 +16,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {{-- Formulario --}}
-        <div class="bg-white rounded-xl shadow-lg border-2 border-primary/20 p-6">
+        <div class="bg-white rounded-sm shadow-lg border-2 border-primary/20 p-6">
             <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-primary/20">
                 <div class="bg-primary/10 p-3 rounded-lg">
                     <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
@@ -45,18 +45,11 @@
                                     clip-rule="evenodd" />
                             </svg>
                         </div>
-                        <input
-                            class="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                            type="password" name="current_password" id="current_password"
-                            placeholder="Ingresa tu contraseña actual">
+                        <input class="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-sm" type="password"
+                            name="current_password" id="current_password" placeholder="Ingresa tu contraseña actual">
                     </div>
                     @error('current_password')
                         <p class="text-red-600 text-xs mt-1.5 flex items-center gap-1">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                    clip-rule="evenodd" />
-                            </svg>
                             {{ $message }}
                         </p>
                     @enderror
@@ -71,17 +64,11 @@
                                     d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                             </svg>
                         </div>
-                        <input
-                            class="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                            type="password" name="password" id="password" placeholder="Ingresa tu nueva contraseña">
+                        <input class="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-sm" type="password"
+                            name="password" id="password" placeholder="Ingresa tu nueva contraseña">
                     </div>
                     @error('password')
                         <p class="text-red-600 text-xs mt-1.5 flex items-center gap-1">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                    clip-rule="evenodd" />
-                            </svg>
                             {{ $message }}
                         </p>
                     @enderror
@@ -98,34 +85,26 @@
                                     clip-rule="evenodd" />
                             </svg>
                         </div>
-                        <input
-                            class="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                            type="password" name="password_confirmation" id="password_confirmation"
+                        <input class="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-sm" type="password"
+                            name="password_confirmation" id="password_confirmation"
                             placeholder="Repite tu nueva contraseña">
                     </div>
                 </div>
 
                 <div class="flex gap-3">
                     <button type="submit"
-                        class="flex-1 bg-primary text-accent px-4 py-3 rounded-lg font-bold hover:bg-primary/90 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                        class="flex-1 bg-primary text-accent px-4 py-3 rounded-sm font-bold hover:bg-primary/90 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                         Cambiar Contraseña
                     </button>
-                    <a href="{{ url()->previous() }}"
-                        class="px-6 py-3 border-2 border-gray-300 rounded-lg font-bold text-gray-700 hover:bg-gray-50 transition-all flex items-center justify-center">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </a>
                 </div>
             </form>
         </div>
 
         {{-- Panel informativo --}}
-        <div class="bg-white rounded-xl shadow-lg border-2 border-primary/20 p-6">
+        <div class="bg-white rounded-sm shadow-lg border-2 border-primary/20 p-6">
             <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-primary/20">
                 <div class="bg-primary/10 p-3 rounded-lg">
                     <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
@@ -141,7 +120,7 @@
             </div>
 
             <div class="space-y-3">
-                <div class="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                <div class="flex items-center gap-3 p-3 rounded-sm bg-primary/5 border border-primary/20">
                     <div class="bg-primary/10 p-1.5 rounded-full">
                         <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
@@ -151,7 +130,7 @@
                     </div>
                     <span class="text-sm text-gray-700 font-medium">Mínimo 8 caracteres</span>
                 </div>
-                <div class="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                <div class="flex items-center gap-3 p-3 rounded-sm bg-primary/5 border border-primary/20">
                     <div class="bg-primary/10 p-1.5 rounded-full">
                         <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
@@ -161,7 +140,7 @@
                     </div>
                     <span class="text-sm text-gray-700 font-medium">Al menos una letra mayúscula</span>
                 </div>
-                <div class="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                <div class="flex items-center gap-3 p-3 rounded-sm bg-primary/5 border border-primary/20">
                     <div class="bg-primary/10 p-1.5 rounded-full">
                         <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
@@ -171,7 +150,7 @@
                     </div>
                     <span class="text-sm text-gray-700 font-medium">Al menos una letra minúscula</span>
                 </div>
-                <div class="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                <div class="flex items-center gap-3 p-3 rounded-sm bg-primary/5 border border-primary/20">
                     <div class="bg-primary/10 p-1.5 rounded-full">
                         <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 24">
                             <path fill-rule="evenodd"
@@ -183,16 +162,11 @@
                 </div>
             </div>
 
-            <div class="mt-6 p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+            <div class="mt-6 p-4 rounded-sm bg-yellow-200 border-2 border-yellow-400">
                 <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-yellow-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                            clip-rule="evenodd" />
-                    </svg>
                     <div>
-                        <p class="text-sm font-semibold text-yellow-800">Importante</p>
-                        <p class="text-xs text-yellow-700 mt-1">Después de cambiar tu contraseña, se cerrará tu sesión y
+                        <p class="text-sm font-semibold text-yellow-900">Importante</p>
+                        <p class="text-xs text-yellow-900 mt-1">Después de cambiar tu contraseña, se cerrará tu sesión y
                             deberás iniciar sesión nuevamente con la nueva contraseña.</p>
                     </div>
                 </div>

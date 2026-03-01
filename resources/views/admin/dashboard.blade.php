@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('contenido')
     <div class="mb-6">
-        <h1 class="text-3xl font-bold text-primary mb-1">Panel de Administración</h1>
-        <p class="text-gray-600">Sistema de Gestión Académica</p>
+        <h1 class="text-2xl font-bold text-primary mb-1">Panel de Administración</h1>
+        <em class="text-gray-600 text-sm">Sistema de Gestión Académica</em>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

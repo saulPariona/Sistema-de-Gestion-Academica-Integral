@@ -25,7 +25,7 @@
 
     <div class="bg-white rounded-xl shadow-lg border-2 border-primary/20 overflow-hidden">
         <table class="w-full text-sm">
-            <thead class="bg-gradient-to-r from-primary to-primary/80">
+            <thead class=" from-primary to-primary/80">
                 <tr>
                     <th class="p-4 text-left font-bold text-accent">Nombre Completo</th>
                     <th class="p-4 text-left font-bold text-accent">DNI</th>

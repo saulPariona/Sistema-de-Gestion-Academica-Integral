@@ -2,8 +2,8 @@
 @section('contenido')
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="text-3xl font-bold text-primary mb-1">Gestión de Cursos</h1>
-            <p class="text-gray-600">Administrar cursos y asignar docentes</p>
+            <h1 class="text-2xl font-bold text-primary mb-1">Gestión de Cursos</h1>
+            <em class="text-gray-600 text-sm">Administrar cursos y asignar docentes</em>
         </div>
         <a href="{{ route('admin.cursos.crear') }}"
             class="flex items-center gap-2 bg-primary text-accent px-4 py-2 rounded-sm text-sm font-semibold hover:bg-primary/90 transition-all shadow-md">

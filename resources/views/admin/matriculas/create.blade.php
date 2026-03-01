@@ -6,7 +6,7 @@
             <p class="text-gray-600">Registrar matrícula de estudiante</p>
         </div>
         <a href="{{ route('admin.matriculas') }}"
-            class="flex items-center gap-2 bg-white border-2 border-primary text-primary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary hover:text-accent transition-all shadow-md">
+            class="flex items-center gap-2 bg-white border-2 border-primary text-primary px-4 py-2 rounded-sm text-sm font-semibold hover:bg-primary hover:text-accent transition-all shadow-md">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -14,7 +14,7 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow-lg border-2 border-primary/20 p-6 max-w-2xl">
+    <div class="bg-white rounded-sm shadow-lg border-2 border-primary/20 p-6 max-w-2xl mx-auto">
         <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-primary/20">
             <div class="bg-primary/10 p-3 rounded-lg">
                 <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
@@ -33,8 +33,7 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Estudiante</label>
-                    <select name="estudiante_id"
-                        class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
+                    <select name="estudiante_id" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-sm">
                         <option value="">Seleccionar estudiante</option>
                         @foreach ($estudiantes as $e)
                             <option value="{{ $e->id }}" {{ old('estudiante_id') == $e->id ? 'selected' : '' }}>
@@ -43,11 +42,6 @@
                     </select>
                     @error('estudiante_id')
                         <p class="text-red-600 text-xs mt-1.5 flex items-center gap-1">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                    clip-rule="evenodd" />
-                            </svg>
                             {{ $message }}
                         </p>
                     @enderror
@@ -55,8 +49,7 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Curso</label>
-                    <select name="curso_id"
-                        class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
+                    <select name="curso_id" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-sm">
                         <option value="">Seleccionar curso</option>
                         @foreach ($cursos as $c)
                             <option value="{{ $c->id }}" {{ old('curso_id') == $c->id ? 'selected' : '' }}>
@@ -65,11 +58,6 @@
                     </select>
                     @error('curso_id')
                         <p class="text-red-600 text-xs mt-1.5 flex items-center gap-1">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                    clip-rule="evenodd" />
-                            </svg>
                             {{ $message }}
                         </p>
                     @enderror
@@ -77,8 +65,7 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Periodo</label>
-                    <select name="periodo_id"
-                        class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
+                    <select name="periodo_id" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-sm">
                         <option value="">Seleccionar periodo</option>
                         @foreach ($periodos as $p)
                             <option value="{{ $p->id }}" {{ old('periodo_id') == $p->id ? 'selected' : '' }}>
@@ -87,18 +74,13 @@
                     </select>
                     @error('periodo_id')
                         <p class="text-red-600 text-xs mt-1.5 flex items-center gap-1">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                    clip-rule="evenodd" />
-                            </svg>
                             {{ $message }}
                         </p>
                     @enderror
                 </div>
             </div>
 
-            <div class="mt-6 flex gap-3">
+            <div class="mt-6 flex justify-center gap-3">
                 <button type="submit"
                     class="flex items-center gap-2 bg-primary text-accent px-6 py-3 rounded-lg font-bold hover:bg-primary/90 transition-all shadow-md hover:shadow-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,13 +88,6 @@
                     </svg>
                     Registrar Matrícula
                 </button>
-                <a href="{{ route('admin.matriculas') }}"
-                    class="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg font-bold text-gray-700 hover:bg-gray-50 transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    Cancelar
-                </a>
             </div>
         </form>
     </div>

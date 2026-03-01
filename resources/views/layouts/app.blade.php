@@ -17,6 +17,10 @@
             background-color: #004f39;
         }
 
+        .bg-secondary {
+            background-color: #078461;
+        }
+
         .bg-primary-dark {
             background-color: #151613;
         }
@@ -129,7 +133,7 @@
                             </a>
                             <a href="{{ route('estudiante.perfil') }}" 
                                class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('estudiante.perfil') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                                <span class="flex items-center gap-2">
+                                <span class="flex items-center gap-2 ">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                                     </svg>
@@ -151,23 +155,23 @@
             </nav>
         @elseif(auth()->user()->esAdministrador())
             <!-- Header Moderno para Administrador -->
-            <header class="bg-primary shadow-lg">
+            <header class="bg-primary shadow-lg p-2">
                 <div class="max-w-7xl mx-auto px-2 py-2">
                     <div class="flex items-center justify-between">
                         <!-- Logo y Título -->
                         <div class="flex items-center gap-4">
                             <img src="{{ asset('image/logo_1.png') }}" alt="Logo" class="h-12 w-12 object-contain bg-white rounded-full p-1">
                             <div>
-                                <h1 class="text-2xl font-bold text-accent tracking-wide">Colegio Max Planck</h1>
-                                <p class="text-sm text-accent">Sistema de Gestión Académica</p>
+                                <h1 class="text-2xl font-bold text-accent tracking-wide font-serif">Colegio Max Planck</h1>
+                                <p class="text-xs text-accent font-serif">Sistema de Gestión Académica</p>
                             </div>
                         </div>
                         
                         <!-- Usuario Info -->
                         <div class="flex items-center gap-4">
                             <div class="text-right hidden md:block">
-                                <p class="text-sm font-semibold text-accent">{{ auth()->user()->nombreCompleto() }}</p>
-                                <p class="text-xs text-accent opacity-80 uppercase">{{ auth()->user()->rol }}</p>
+                                <p class="text-sm font-semibold text-accent font-serif">{{ auth()->user()->nombreCompleto() }}</p>
+                                <p class="text-xs text-accent opacity-80 uppercase font-serif">{{ auth()->user()->rol }}</p>
                             </div>
                             @if (auth()->user()->foto_perfil)
                                 <img src="{{ asset('storage/' . auth()->user()->foto_perfil) }}" alt="Foto" class="w-10 h-10 rounded-full object-cover border-2 border-accent shadow-md">
@@ -176,7 +180,7 @@
                                     {{ strtoupper(substr(auth()->user()->nombres, 0, 1)) }}
                                 </div>
                             @endif
-                            <a class="text-sm text-primary bg-accent hover:bg-yellow-200 px-4 py-2 rounded-lg font-semibold transition-all shadow-md"
+                            <a class="text-sm text-primary bg-accent hover:bg-yellow-200 px-4 py-2 rounded-sm font-semibold transition-all shadow-md font-serif"
                                 href="{{ route('logout') }}">Salir</a>
                         </div>
                     </div>
@@ -189,8 +193,8 @@
                     <div class="flex gap-2">
                         <a href="{{ route('admin.dashboard') }}" 
                            class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('admin.dashboard') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
                                 </svg>
                                 Inicio
@@ -198,8 +202,8 @@
                         </a>
                         <a href="{{ route('admin.usuarios') }}" 
                            class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('admin.usuarios*') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                                 </svg>
                                 Usuarios
@@ -207,8 +211,8 @@
                         </a>
                         <a href="{{ route('admin.periodos') }}" 
                            class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('admin.periodos*') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
                                 </svg>
                                 Periodos
@@ -216,8 +220,8 @@
                         </a>
                         <a href="{{ route('admin.cursos') }}" 
                            class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('admin.cursos*') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
                                 </svg>
                                 Cursos
@@ -225,8 +229,8 @@
                         </a>
                         <a href="{{ route('admin.matriculas') }}" 
                            class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('admin.matriculas*') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
                                 </svg>
                                 Matrículas
@@ -234,8 +238,8 @@
                         </a>
                         <a href="{{ route('admin.calificaciones') }}" 
                            class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('admin.calificaciones*') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
                                     <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
                                 </svg>
@@ -244,8 +248,8 @@
                         </a>
                         <a href="{{ route('admin.auditorias') }}" 
                            class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('admin.auditorias*') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clip-rule="evenodd"/>
                                 </svg>
                                 Auditoría
@@ -253,8 +257,8 @@
                         </a>
                         <a href="{{ route('password.change') }}" 
                            class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 border-transparent ml-auto">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
                                 </svg>
                                 Contraseña

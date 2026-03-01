@@ -2,8 +2,8 @@
 @section('contenido')
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="text-3xl font-bold text-primary mb-1">Periodos Académicos</h1>
-            <p class="text-gray-600">Configurar y gestionar periodos escolares</p>
+            <h1 class="text-2xl font-bold text-primary mb-1">Periodos Académicos</h1>
+            <em class="text-gray-600 text-sm">Configurar y gestionar periodos escolares</em>
         </div>
         <a href="{{ route('admin.periodos.crear') }}"
             class="flex items-center gap-2 bg-primary text-accent px-4 py-2 rounded-sm text-sm font-semibold hover:bg-primary/90 transition-all shadow-md">

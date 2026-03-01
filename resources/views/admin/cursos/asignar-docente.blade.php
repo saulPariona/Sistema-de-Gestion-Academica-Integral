@@ -6,7 +6,7 @@
             <p class="text-gray-600">{{ $curso->nombre }}</p>
         </div>
         <a href="{{ route('admin.cursos') }}"
-            class="flex items-center gap-2 bg-white border-2 border-primary text-primary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary hover:text-accent transition-all shadow-md">
+            class="flex items-center gap-2 bg-white border-2 border-primary text-primary px-4 py-2 rounded-sm text-sm font-semibold hover:bg-primary hover:text-accent transition-all shadow-md">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -14,8 +14,8 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow-lg border-2 border-primary/20 p-6 max-w-2xl">
-        <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-primary/20">
+    <div class="bg-white rounded-sm shadow-lg border-2  p-6 max-w-2xl mx-auto">
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 ">
             <div class="bg-primary/10 p-3 rounded-lg">
                 <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
                     <path
@@ -29,7 +29,7 @@
         </div>
 
         {{-- Docentes actuales --}}
-        <div class="mb-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
+        <div class="mb-6 p-4 bg-primary/5 rounded-sm border-2 border-gray-300">
             <p class="text-sm font-semibold text-gray-700 mb-2">Docentes actuales:</p>
             <div class="flex flex-wrap gap-2">
                 @forelse($curso->docentes as $d)
@@ -54,7 +54,7 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Docente</label>
                     <select name="docente_id"
-                        class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
+                        class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-sm">
                         <option value="">Seleccionar docente</option>
                         @foreach ($docentes as $docente)
                             <option value="{{ $docente->id }}">{{ $docente->nombreCompleto() }} -
@@ -74,21 +74,14 @@
                 </div>
             </div>
 
-            <div class="mt-6 flex gap-3">
+            <div class="mt-6 flex justify-center">
                 <button type="submit"
-                    class="flex items-center gap-2 bg-primary text-accent px-6 py-3 rounded-lg font-bold hover:bg-primary/90 transition-all shadow-md hover:shadow-lg">
+                    class="flex items-center gap-2 bg-primary text-accent px-6 py-3 rounded-sm font-bold hover:bg-primary/90 transition-all shadow-md hover:shadow-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                     Asignar
                 </button>
-                <a href="{{ route('admin.cursos') }}"
-                    class="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg font-bold text-gray-700 hover:bg-gray-50 transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    Cancelar
-                </a>
             </div>
         </form>
     </div>
