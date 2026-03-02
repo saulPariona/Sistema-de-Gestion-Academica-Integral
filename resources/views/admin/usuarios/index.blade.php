@@ -18,7 +18,7 @@
         <div class="flex flex-wrap gap-3">
             <input type="text" name="buscar" value="{{ request('buscar') }}"
                 placeholder="Buscar por nombre, DNI o email..."
-                class="flex-1 min-w-[250px] p-2 text-sm border-2 border-gray-300 rounded-sm focus:border-primary focus:outline-none">
+                class="flex-1 p-2 text-sm border-2 border-gray-300 rounded-sm focus:border-primary focus:outline-none">
             <select name="rol"
                 class="p-2 text-sm border-2 border-gray-300 rounded-sm focus:border-primary focus:outline-none">
                 <option value="">Todos los roles</option>
@@ -51,20 +51,8 @@
             <div class="bg-white rounded-sm shadow-lg p-6 border-2 border-gray-400 hover:shadow-2xl transition-all">
                 <div class="flex justify-between items-start">
                     <div class="flex items-start gap-4 flex-1">
-                        <div class="rounded-sm">
-                            <svg class="w-6 h-6 text-{{ $usuario->rol == 'administrador' ? 'purple' : ($usuario->rol == 'docente' ? 'green' : 'blue') }}-600"
-                                fill="currentColor" viewBox="0 0 20 20">
-                                @if ($usuario->rol == 'docente')
-                                    <path
-                                        d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-                                @else
-                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                        clip-rule="evenodd" />
-                                @endif
-                            </svg>
-                        </div>
                         <div class="flex-1">
-                            <h3 class="text-sm font-semibold text-gray-800 mb-2 uppercase">{{ $usuario->nombreCompleto() }}
+                            <h3 class="text-xs font-semibold text-gray-800 mb-2 uppercase">{{ $usuario->nombreCompleto() }}
                             </h3>
                             <div class="flex flex-wrap gap-2 mb-3">
                                 <span
@@ -86,7 +74,7 @@
                                     {{ ucfirst($usuario->estado) }}
                                 </span>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-gray-600">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-gray-600 px-2">
                                 <div>
                                     <span class="font-semibold">DNI:</span> {{ $usuario->dni }}
                                 </div>

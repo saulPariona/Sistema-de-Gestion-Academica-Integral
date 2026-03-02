@@ -15,7 +15,6 @@ class StoreObservacionRequest extends FormRequest
     {
         return [
             'estudiante_id' => 'required|exists:users,id',
-            'curso_id' => 'required|exists:cursos,id',
             'texto' => 'required|string|max:1000',
         ];
     }
@@ -24,7 +23,6 @@ class StoreObservacionRequest extends FormRequest
     {
         return [
             'estudiante_id.required' => 'El estudiante es obligatorio.',
-            'curso_id.required' => 'El curso es obligatorio.',
             'texto.required' => 'La observación es obligatoria.',
         ];
     }

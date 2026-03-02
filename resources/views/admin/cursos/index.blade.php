@@ -41,9 +41,9 @@
             <div class="bg-white rounded-sm shadow-lg p-6 border-2 border-gray-400 hover:shadow-2xl transition-all">
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $curso->nombre }}</h3>
+                        <h3 class="text-xl font-bold text-gray-800">{{ $curso->nombre }}</h3>
                         @if ($curso->descripcion)
-                            <p class="text-gray-600 text-xs mb-3">{{ $curso->descripcion }}</p>
+                            <em class="text-gray-600 text-xs">{{ $curso->descripcion }}</em>
                         @endif
                         <div class="flex flex-wrap gap-2 mb-3">
                             <span
