@@ -124,23 +124,23 @@
             </nav>
         @elseif(auth()->user()->esEstudiante())
             <!-- Header Moderno para Estudiante -->
-            <header class="bg-primary shadow-lg">
+            <header class="bg-primary shadow-lg p-2">
                 <div class="max-w-7xl mx-auto px-2 py-2">
                     <div class="flex items-center justify-between">
                         <!-- Logo y Título -->
                         <div class="flex items-center gap-4">
                             <img src="{{ asset('image/logo_1.png') }}" alt="Logo" class="h-12 w-12 object-contain bg-white rounded-full p-1">
                             <div>
-                                <h1 class="text-lg font-bold text-accent tracking-wide font-serif-accent">Colegio Max Planck</h1>
-                                <p class="text-xs text-accent">Sistema de Gestión Académica</p>
+                                <h1 class="text-2xl font-bold text-accent tracking-wide font-serif">Colegio Max Planck</h1>
+                                <p class="text-xs text-accent font-serif">Sistema de Gestión Académica</p>
                             </div>
                         </div>
                         
                         <!-- Usuario Info -->
                         <div class="flex items-center gap-4">
                             <div class="text-right hidden md:block">
-                                <p class="text-sm font-semibold text-accent">{{ auth()->user()->nombreCompleto() }}</p>
-                                <p class="text-xs text-accent opacity-80 uppercase">{{ auth()->user()->rol }}</p>
+                                <p class="text-sm font-semibold text-accent font-serif">{{ auth()->user()->nombreCompleto() }}</p>
+                                <p class="text-xs text-accent opacity-80 uppercase font-serif">{{ auth()->user()->rol }}</p>
                             </div>
                             @if (auth()->user()->foto_perfil)
                                 <img src="{{ asset('storage/' . auth()->user()->foto_perfil) }}" alt="Foto" class="w-10 h-10 rounded-full object-cover border-2 border-accent shadow-md">
@@ -149,21 +149,21 @@
                                     {{ strtoupper(substr(auth()->user()->nombres, 0, 1)) }}
                                 </div>
                             @endif
-                            <a class="text-sm text-primary bg-accent hover:bg-yellow-200 px-4 py-2 rounded-lg font-semibold transition-all shadow-md"
+                            <a class="text-sm text-primary bg-accent hover:bg-yellow-200 px-4 py-2 rounded-sm font-semibold transition-all shadow-md font-serif"
                                 href="{{ route('logout') }}">Salir</a>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <!-- Navegación Moderna -->
+            <!-- Navegación Moderna para Estudiante -->
             <nav class="bg-primary-dark shadow-md">
                 <div class="max-w-7xl mx-auto px-4">
                     <div class="flex gap-2">
                         <a href="{{ route('estudiante.dashboard') }}" 
-                           class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('estudiante.dashboard') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                           class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('estudiante.dashboard', 'estudiante.curso', 'estudiante.examenes', 'estudiante.rendir-examen', 'estudiante.resultado-examen') ? 'border-accent bg-primary' : 'border-transparent' }}">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
                                 </svg>
                                 Mis Cursos
@@ -171,8 +171,8 @@
                         </a>
                         <a href="{{ route('estudiante.calificaciones') }}" 
                            class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('estudiante.calificaciones') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
                                     <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
                                 </svg>
@@ -180,9 +180,9 @@
                             </span>
                         </a>
                         <a href="{{ route('estudiante.perfil') }}" 
-                           class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('estudiante.perfil') ? 'border-accent bg-primary' : 'border-transparent' }}">
-                            <span class="flex items-center gap-2 ">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                           class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 {{ request()->routeIs('estudiante.perfil*') ? 'border-accent bg-primary' : 'border-transparent' }}">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                                 </svg>
                                 Mi Perfil
@@ -190,8 +190,8 @@
                         </a>
                         <a href="{{ route('password.change') }}" 
                            class="px-4 py-3 text-accent hover:bg-primary transition-all border-b-2 border-transparent ml-auto">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <span class="flex items-center gap-2 text-sm font-serif">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
                                 </svg>
                                 Contraseña

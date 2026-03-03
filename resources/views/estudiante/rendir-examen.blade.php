@@ -2,11 +2,11 @@
 @section('contenido')
     <div class="flex justify-between items-center mb-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">{{ $examen->titulo }}</h1>
-            <p class="text-sm text-gray-500">Intento #{{ $intento->numero_intento }}</p>
+            <h1 class="text-xl font-bold text-primary mb-1">{{ $examen->titulo }}</h1>
+            <em class="text-gray-600 text-sm p-2">Intento N° {{ $intento->numero_intento }}</em>
         </div>
         <div id="temporizador"
-            class="bg-red-600 text-white px-4 py-2 rounded font-mono text-lg font-semibold"></div>
+            class="bg-red-600 text-white px-4 py-2 rounded-sm font-mono text-lg font-semibold shadow-md"></div>
     </div>
 
     <form id="examen-form" method="post"
@@ -14,29 +14,29 @@
         @csrf
     </form>
 
-    <div class="space-y-4">
+    <div class="grid gap-2">
         @foreach ($preguntas as $index => $pregunta)
-            <div class="bg-white rounded border border-gray-200 p-4" id="pregunta-{{ $pregunta->id }}">
-                <p class="font-semibold text-gray-800 mb-3">{{ $index + 1 }}. {{ $pregunta->texto }}</p>
+            <div class="bg-white rounded-sm shadow-lg border-2 border-gray-400 p-5" id="pregunta-{{ $pregunta->id }}">
+                <p class="font-bold text-sm text-gray-800 mb-3">{{ $index + 1 }}. {{ $pregunta->texto }}</p>
 
                 @if ($pregunta->imagen)
                     <img src="{{ asset('storage/' . $pregunta->imagen) }}" alt="Imagen"
-                        class="mb-3 max-h-48 rounded">
+                        class="mb-3 max-h-48 rounded-sm border border-gray-200">
                 @endif
 
                 <div class="space-y-2 ml-4">
                     @foreach ($pregunta->alternativas as $alt)
                         <label
-                            class="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-gray-50 text-sm alternativa-label"
+                            class="flex items-center gap-3 p-2 rounded-sm cursor-pointer bg-gray-50 border-gray-100 hover:bg-gray-200 text-sm alternativa-label border hover:border-gray-300 transition-all"
                             data-pregunta="{{ $pregunta->id }}" data-alternativa="{{ $alt->id }}">
                             <input type="radio" name="pregunta_{{ $pregunta->id }}" value="{{ $alt->id }}"
                                 {{ isset($respuestasGuardadas[$pregunta->id]) && $respuestasGuardadas[$pregunta->id] == $alt->id ? 'checked' : '' }}
                                 onchange="guardarRespuesta({{ $pregunta->id }}, {{ $alt->id }})"
-                                class="text-blue-600">
+                                class="text-primary">
                             <span>{{ $alt->texto }}</span>
                             @if ($alt->imagen)
                                 <img src="{{ asset('storage/' . $alt->imagen) }}" alt="Imagen"
-                                    class="max-h-16 rounded">
+                                    class="max-h-16 rounded-sm border">
                             @endif
                         </label>
                     @endforeach
@@ -45,11 +45,12 @@
         @endforeach
     </div>
 
-    <div class="mt-6 flex justify-between items-center">
-        <p class="text-sm text-gray-500">Respondidas: <span id="contador-respuestas">{{ $respuestasGuardadas->count() }}</span> / {{ $preguntas->count() }}</p>
+    <div class="mt-6 flex justify-between items-center bg-white rounded-sm shadow-lg p-4 border-2 border-gray-400">
+        <p class="text-sm text-gray-600 font-semibold">Respondidas: <span id="contador-respuestas" class="text-primary">{{ $respuestasGuardadas->count() }}</span> / {{ $preguntas->count() }}</p>
         <button onclick="confirmarFinalizar()"
-            class="bg-red-600 text-white px-6 py-3 rounded font-semibold hover:bg-red-700 text-sm">Finalizar
-            Examen</button>
+            class="flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-sm text-sm font-semibold hover:bg-red-700">
+            Finalizar Examen
+        </button>
     </div>
 
     <script>
@@ -103,11 +104,11 @@
 
         function confirmarFinalizar() {
             if (respondidas < totalPreguntas) {
-                if (!confirm('Aún tienes preguntas sin responder. ¿Deseas finalizar el examen?')) {
+                if (!confirm('Aun tienes preguntas sin responder. Deseas finalizar el examen?')) {
                     return;
                 }
             } else {
-                if (!confirm('¿Estás seguro de finalizar el examen?')) {
+                if (!confirm('Estas seguro de finalizar el examen?')) {
                     return;
                 }
             }
