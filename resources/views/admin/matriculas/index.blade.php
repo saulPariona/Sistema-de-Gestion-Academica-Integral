@@ -48,13 +48,9 @@
                 <div class="flex justify-between items-start">
                     <div class="flex items-start gap-4 flex-1">
                         <div class="rounded-sm ">
-                            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                    clip-rule="evenodd" />
-                            </svg>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-sm font-semibold text-gray-800 mb-1 uppercase">
+                            <h3 class="text-xs font-semibold text-gray-800 mb-1 uppercase">
                                 {{ $matricula->estudiante->nombreCompleto() }}
                             </h3>
                             <div class="flex flex-wrap gap-2 mb-3">
@@ -80,8 +76,8 @@
                                     {{ ucfirst($matricula->estado) }}
                                 </span>
                             </div>
-                            <div class="text-xs text-gray-600">
-                                <span class="font-semibold">DNI:</span> {{ $matricula->estudiante->dni }}
+                            <div class="text-xs text-gray-600 px-2">
+                                <em class="font-semibold">DNI:</em> <em>{{ $matricula->estudiante->dni }}</em>
                             </div>
                         </div>
                     </div>

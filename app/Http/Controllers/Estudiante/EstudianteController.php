@@ -262,6 +262,7 @@ class EstudianteController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
+        $datosAnteriores = $user->only(['telefono', 'direccion']);
         $datos = $request->only(['telefono', 'direccion']);
 
         if ($request->hasFile('foto_perfil')) {
@@ -273,7 +274,9 @@ class EstudianteController extends Controller
         }
 
         $user->update($datos);
-        AuditoriaService::registrar('actualizar_perfil', 'User', $user->id);
+
+        $datosNuevos = $user->only(['telefono', 'direccion']);
+        AuditoriaService::registrar('actualizar_perfil', 'User', $user->id, $datosAnteriores, $datosNuevos);
         return back()->with('status', 'Perfil actualizado correctamente.');
     }
 }

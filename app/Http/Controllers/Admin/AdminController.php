@@ -91,7 +91,7 @@ class AdminController extends Controller
     public function actualizarUsuario(UpdateUsuarioRequest $request, int $usuario)
     {
         $user = User::findOrFail($usuario);
-        $datosAnteriores = $user->toArray();
+        $datosAnteriores = $user->only(['nombres', 'apellidos', 'email', 'dni', 'telefono', 'direccion', 'rol', 'estado']);
         $datos = $request->validated();
 
         if ($request->hasFile('foto_perfil')) {
@@ -113,7 +113,8 @@ class AdminController extends Controller
 
         $user->update($datos);
 
-        AuditoriaService::registrar('actualizar_usuario', 'User', $user->id, $datosAnteriores, $datos);
+        $datosNuevos = $user->only(['nombres', 'apellidos', 'email', 'dni', 'telefono', 'direccion', 'rol', 'estado']);
+        AuditoriaService::registrar('actualizar_usuario', 'User', $user->id, $datosAnteriores, $datosNuevos);
 
         return redirect()->route('admin.usuarios')->with('status', 'Usuario actualizado correctamente.');
     }
@@ -121,10 +122,11 @@ class AdminController extends Controller
     public function toggleEstadoUsuario(int $usuario)
     {
         $user = User::findOrFail($usuario);
-        $nuevoEstado = $user->estado === 'activo' ? 'inactivo' : 'activo';
+        $estadoAnterior = $user->estado;
+        $nuevoEstado = $estadoAnterior === 'activo' ? 'inactivo' : 'activo';
         $user->update(['estado' => $nuevoEstado, 'intentos_fallidos' => 0, 'bloqueado_hasta' => null]);
 
-        AuditoriaService::registrar('cambiar_estado_usuario', 'User', $user->id, ['estado' => $user->estado], ['estado' => $nuevoEstado]);
+        AuditoriaService::registrar('cambiar_estado_usuario', 'User', $user->id, ['estado' => $estadoAnterior], ['estado' => $nuevoEstado]);
 
         return redirect()->route('admin.usuarios')->with('status', "Usuario {$nuevoEstado} correctamente.");
     }
@@ -331,6 +333,18 @@ class AdminController extends Controller
     public function auditorias(Request $request)
     {
         $query = Auditoria::with('user')->orderBy('created_at', 'desc');
+
+        if ($request->filled('buscar')) {
+            $buscar = $request->buscar;
+            $query->where(function ($q) use ($buscar) {
+                $q->where('accion', 'like', "%{$buscar}%")
+                  ->orWhere('modelo', 'like', "%{$buscar}%")
+                  ->orWhereHas('user', function ($q2) use ($buscar) {
+                      $q2->where('nombres', 'like', "%{$buscar}%")
+                         ->orWhere('apellidos', 'like', "%{$buscar}%");
+                  });
+            });
+        }
 
         if ($request->filled('accion')) {
             $query->where('accion', $request->accion);

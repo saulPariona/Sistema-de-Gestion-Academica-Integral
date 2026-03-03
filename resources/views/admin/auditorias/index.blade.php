@@ -46,11 +46,15 @@
                                     class="px-3 py-1 rounded-sm text-xs font-bold bg-gray-100 text-gray-700 border border-gray-300">
                                     ID: {{ $a->modelo_id }}
                                 </span>
+                                <span
+                                    class="px-3 py-1 rounded-sm text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-300">
+                                    {{ $a->user ? $a->user->nombreCompleto() : 'Sistema' }}
+                                </span>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-gray-600">
                                 <div class="text-xs">
                                     <span class="font-semibold">Usuario:</span>
-                                    {{ $a->usuario ? $a->usuario->nombreCompleto() : 'Sistema' }}
+                                    {{ $a->user ? $a->user->nombreCompleto() : 'Sistema' }}
                                 </div>
                                 <div class="text-xs">
                                     <span class="font-semibold">Fecha:</span> {{ $a->created_at->format('d/m/Y H:i') }}

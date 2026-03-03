@@ -114,6 +114,8 @@ class DocenteController extends Controller
         $pregunta = Pregunta::findOrFail($pregunta);
         $this->authorize('update', $pregunta);
 
+        $datosAnteriores = $pregunta->only(['texto', 'dificultad', 'puntaje']);
+
         $pregunta->update($request->only(['texto', 'dificultad', 'puntaje']));
 
         if ($request->hasFile('imagen')) {
@@ -137,7 +139,8 @@ class DocenteController extends Controller
             }
         }
 
-        AuditoriaService::registrar('actualizar_pregunta', 'Pregunta', $pregunta->id);
+        $datosNuevos = $pregunta->only(['texto', 'dificultad', 'puntaje']);
+        AuditoriaService::registrar('actualizar_pregunta', 'Pregunta', $pregunta->id, $datosAnteriores, $datosNuevos);
         return redirect()->route('docente.banco-preguntas', $curso)->with('status', 'Pregunta actualizada correctamente.');
     }
 
@@ -205,6 +208,8 @@ class DocenteController extends Controller
         $examen = Examen::findOrFail($examen);
         $this->authorize('update', $examen);
 
+        $datosAnteriores = $examen->only(['titulo', 'descripcion', 'fecha_inicio', 'fecha_fin', 'duracion_minutos', 'intentos_permitidos', 'orden_aleatorio_preguntas', 'orden_aleatorio_alternativas', 'mostrar_resultados', 'permitir_revision', 'navegacion_libre']);
+
         $datos = $request->validated();
         $datos['orden_aleatorio_preguntas'] = $request->has('orden_aleatorio_preguntas');
         $datos['orden_aleatorio_alternativas'] = $request->has('orden_aleatorio_alternativas');
@@ -213,7 +218,9 @@ class DocenteController extends Controller
         $datos['navegacion_libre'] = $request->has('navegacion_libre');
 
         $examen->update($datos);
-        AuditoriaService::registrar('actualizar_examen', 'Examen', $examen->id);
+
+        $datosNuevos = $examen->only(['titulo', 'descripcion', 'fecha_inicio', 'fecha_fin', 'duracion_minutos', 'intentos_permitidos', 'orden_aleatorio_preguntas', 'orden_aleatorio_alternativas', 'mostrar_resultados', 'permitir_revision', 'navegacion_libre']);
+        AuditoriaService::registrar('actualizar_examen', 'Examen', $examen->id, $datosAnteriores, $datosNuevos);
         return redirect()->route('docente.examenes', $curso)->with('status', 'Examen actualizado correctamente.');
     }
 
