@@ -123,13 +123,13 @@
                 </a>
 
                 <a href="{{ route('docente.exportar-notas', $curso) }}"
-                    class="flex items-center gap-3 bg-gray-200 border-2 border-gray-400 text-gray-800 text-sm p-3 rounded-xs font-semibold transition-all hover:border-gray-600 group">
+                    class="flex items-center gap-3 bg-green-100 border-2 border-green-400 text-green-800 text-sm p-3 rounded-xs font-semibold transition-all hover:border-green-600 hover:bg-green-200 group">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
                             clip-rule="evenodd" />
                     </svg>
-                    <span>Exportar Notas CSV</span>
+                    <span>Descargar Notas Excel</span>
                     <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>

@@ -10,6 +10,9 @@ use App\Models\Intento;
 use App\Models\Observacion;
 use App\Services\AuditoriaService;
 use Illuminate\Support\Facades\Auth;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 class ObservacionController extends Controller
 {
@@ -48,18 +51,48 @@ class ObservacionController extends Controller
 
     public function exportarNotas(int $curso)
     {
-        $curso = Curso::findOrFail($curso);
+        $curso = Curso::with('periodo')->findOrFail($curso);
         $this->authorize('gestionar', $curso);
 
-        $estudiantes = $curso->estudiantes;
-        $examenes = Examen::where('curso_id', $curso->id)->get();
+        $estudiantes = $curso->estudiantes()->orderBy('apellidos')->get();
+        $examenes = Examen::where('curso_id', $curso->id)->orderBy('created_at')->get();
 
-        $datos = [];
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Notas');
+
+        // Fila 1: Info del curso
+        $sheet->setCellValue('A1', 'Curso: ' . $curso->nombre);
+        $sheet->setCellValue('A2', 'Periodo: ' . $curso->periodo->nombre);
+        $sheet->setCellValue('A3', 'Fecha: ' . now()->format('d/m/Y'));
+
+        // Fila 5: Encabezados
+        $row = 5;
+        $col = 'A';
+        $sheet->setCellValue($col++ . $row, 'N°');
+        $sheet->setCellValue($col++ . $row, 'DNI');
+        $sheet->setCellValue($col++ . $row, 'Apellidos y Nombres');
+
+        $examenCols = [];
+        foreach ($examenes as $examen) {
+            $examenCols[] = $col;
+            $sheet->setCellValue($col++ . $row, $examen->titulo);
+        }
+
+        $colPromedio = $col++;
+        $sheet->setCellValue($colPromedio . $row, 'Promedio');
+        $colEstado = $col;
+        $sheet->setCellValue($colEstado . $row, 'Estado');
+
+        // Datos de estudiantes
+        $row = 6;
+        $numero = 1;
+
         foreach ($estudiantes as $estudiante) {
-            $fila = [
-                'DNI' => $estudiante->dni,
-                'Estudiante' => $estudiante->nombreCompleto(),
-            ];
+            $col = 'A';
+            $sheet->setCellValue($col++ . $row, $numero);
+            $sheet->setCellValueExplicit($col++ . $row, $estudiante->dni, DataType::TYPE_STRING);
+            $sheet->setCellValue($col++ . $row, $estudiante->apellidos . ', ' . $estudiante->nombres);
 
             $sumaNotas = 0;
             $contadorExamenes = 0;
@@ -75,32 +108,34 @@ class ObservacionController extends Controller
                 if ($intento && $examen->puntaje_total > 0) {
                     $nota = round(($intento->puntaje_obtenido / $examen->puntaje_total) * 20, 2);
                 }
-                $fila[$examen->titulo] = $nota;
+
+                $sheet->setCellValue($col++ . $row, $nota);
                 $sumaNotas += $nota;
                 $contadorExamenes++;
             }
 
-            $fila['Promedio'] = $contadorExamenes > 0 ? round($sumaNotas / $contadorExamenes, 2) : 0;
-            $datos[] = $fila;
+            $promedio = $contadorExamenes > 0 ? round($sumaNotas / $contadorExamenes, 2) : 0;
+            $sheet->setCellValue($colPromedio . $row, $promedio);
+            $sheet->setCellValue($colEstado . $row, $promedio >= 11 ? 'Aprobado' : 'Desaprobado');
+
+            $row++;
+            $numero++;
         }
 
-        $filename = "notas_{$curso->nombre}_" . now()->format('Ymd') . '.csv';
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-        ];
+        // Autoajustar ancho de columnas
+        foreach (range('A', $colEstado) as $c) {
+            $sheet->getColumnDimension($c)->setAutoSize(true);
+        }
 
-        $callback = function () use ($datos) {
-            $file = fopen('php://output', 'w');
-            if (!empty($datos)) {
-                fputcsv($file, array_keys($datos[0]));
-                foreach ($datos as $fila) {
-                    fputcsv($file, $fila);
-                }
-            }
-            fclose($file);
-        };
+        // Generar descarga
+        $nombreCurso = preg_replace('/[^A-Za-z0-9_\-]/', '_', $curso->nombre);
+        $filename = "Notas_{$nombreCurso}_" . now()->format('Y-m-d') . '.xlsx';
+        $writer = new Xlsx($spreadsheet);
 
-        return response()->stream($callback, 200, $headers);
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 }
