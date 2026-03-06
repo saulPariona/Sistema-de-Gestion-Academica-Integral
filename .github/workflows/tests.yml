@@ -59,4 +59,4 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
           MAIL_MAILER: log
-        run: php artisan test --parallel
+        run: php artisan test
