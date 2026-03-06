@@ -122,6 +122,7 @@
 
                     <div class="flex gap-3">
                         @if ($tieneIntentoActivo)
+                        
                             <form method="post" action="{{ route('estudiante.iniciar-examen', [$curso, $examen]) }}"
                                 class="grow">
                                 @csrf

@@ -24,10 +24,19 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'nombres' => fake()->firstName(),
+            'apellidos' => fake()->lastName() . ' ' . fake()->lastName(),
+            'dni' => fake()->unique()->numerify('########'),
+            'fecha_nacimiento' => fake()->date('Y-m-d', '-15 years'),
+            'sexo' => fake()->randomElement(['M', 'F']),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'telefono' => fake()->numerify('9########'),
+            'direccion' => fake()->address(),
+            'rol' => 'estudiante',
+            'estado' => 'activo',
+            'intentos_fallidos' => 0,
             'remember_token' => Str::random(10),
         ];
     }
@@ -39,6 +48,28 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    public function administrador(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'rol' => 'administrador',
+        ]);
+    }
+
+    public function docente(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'rol' => 'docente',
+            'especialidad' => fake()->randomElement(['Matemática', 'Comunicación', 'Ciencias', 'Historia']),
+        ]);
+    }
+
+    public function estudiante(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'rol' => 'estudiante',
         ]);
     }
 }

@@ -66,7 +66,7 @@
                                 </svg>
                             </span>
                             <input class="w-full pl-10 pr-4 py-2.5 text-sm border-2 border-gray-200 rounded-sm focus:border-green-700 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
-                                 value="{{ old('email') }}" name="email" id="email"
+                                type="email" value="{{ old('email') }}" name="email" id="email"
                                 placeholder="correo@colegiomp.edu.pe">
                         </div>
                         @error('email')

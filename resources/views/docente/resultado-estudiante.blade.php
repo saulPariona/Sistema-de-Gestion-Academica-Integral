@@ -36,9 +36,13 @@
                 <div class="rounded-sm">
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500 font-medium">Puntaje</p>
-                    <p class="font-bold text-gray-800 text-xs">{{ $intento->puntaje_obtenido ?? '-' }} /
-                        {{ $examen->puntaje_total }}</p>
+                    <p class="text-sm text-gray-500 font-medium">Nota (base 20)</p>
+                    @php
+                        $notaBase20 = $examen->puntaje_total > 0
+                            ? round(($intento->puntaje_obtenido / $examen->puntaje_total) * 20, 1)
+                            : 0;
+                    @endphp
+                    <p class="font-bold text-xs {{ $notaBase20 >= 11 ? 'text-green-600' : 'text-red-600' }}">{{ $notaBase20 }} / 20</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">

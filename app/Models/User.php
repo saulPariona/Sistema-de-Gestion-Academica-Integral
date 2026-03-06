@@ -9,10 +9,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     const ROL_ADMINISTRADOR = 'administrador';
     const ROL_DOCENTE = 'docente';
@@ -117,7 +118,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function observacionesRecibidas(): HasMany
-    {
+        {
         return $this->hasMany(Observacion::class, 'estudiante_id');
     }
 

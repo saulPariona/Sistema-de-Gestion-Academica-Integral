@@ -32,28 +32,28 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="p-3 bg-green-50 rounded-sm border-2 border-green-200">
+                    <div class="p-3 bg-gray-50 rounded-sm border-2 border-gray-200">
                         <div class="flex items-center gap-2 mb-1">
-                            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                                 <path
                                     d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                             </svg>
-                            <p class="text-xs text-green-700 font-semibold">Estudiantes</p>
+                            <p class="text-xs text-gray-700 font-semibold">Estudiantes</p>
                         </div>
-                        <p class="text-2xl font-bold text-green-600">{{ $curso->estudiantes->count() }}</p>
+                        <p class="text-2xl font-bold text-gray-600">{{ $curso->estudiantes->count() }}</p>
                     </div>
 
-                    <div class="p-3 bg-green-50 rounded-sm border-2 border-green-200">
+                    <div class="p-3 bg-gray-50 rounded-sm border-2 border-gray-200">
                         <div class="flex items-center gap-2 mb-1">
-                            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
                                 <path fill-rule="evenodd"
                                     d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
                                     clip-rule="evenodd" />
                             </svg>
-                            <p class="text-xs text-green-700 font-semibold">Exámenes</p>
+                            <p class="text-xs text-gray-700 font-semibold">Exámenes</p>
                         </div>
-                        <p class="text-2xl font-bold text-green-600">{{ $curso->examenes->count() }}</p>
+                        <p class="text-2xl font-bold text-gray-600">{{ $curso->examenes->count() }}</p>
                     </div>
                 </div>
             </div>

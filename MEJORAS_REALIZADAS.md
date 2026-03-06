@@ -198,7 +198,152 @@ if ($intentosRealizados >= $examen->intentos_permitidos) {
 5. **Ver resultado:**
    - Click en "Ver resultado" del intento
    - Debe mostrar nota, si aprobó, respuestas correctas/incorrectas
-6. **Segundo intento:**
+---
+
+## 🔧 5. Auditoría Senior — Mejoras de Arquitectura y Escalabilidad
+
+> Implementación completa realizada tras auditoría profesional senior del proyecto.
+
+### 5.1 Rate Limiting (Protección contra fuerza bruta)
+
+**Archivo:** `app/Providers/AppServiceProvider.php`
+
+✅ **Rate limiters configurados:**
+- `login` → 5 intentos/minuto por email+IP
+- `password-reset` → 3 intentos/minuto por IP
+- `global` → 120 peticiones/minuto autenticadas
+
+**Rutas protegidas en** `routes/web.php`:
+```php
+Route::post('/login', ...)->middleware('throttle:login');
+Route::post('/password/reset', ...)->middleware('throttle:password-reset');
+```
+
+### 5.2 Refactoring de Controllers (Principio SRP)
+
+✅ **AdminController** dividido en 7 controllers especializados:
+| Controller | Responsabilidad |
+|---|---|
+| `Admin\DashboardController` | Dashboard invocable |
+| `Admin\UsuarioController` | CRUD usuarios, toggle, reset |
+| `Admin\PeriodoController` | CRUD periodos |
+| `Admin\CursoController` | CRUD cursos, asignar docentes |
+| `Admin\MatriculaController` | Gestión matrículas |
+| `Admin\ApoderadoController` | CRUD apoderados |
+| `Admin\CalificacionController` | Vista calificaciones |
+| `Admin\AuditoriaController` | Vista auditorías |
+
+✅ **DocenteController** dividido en 4 controllers:
+| Controller | Responsabilidad |
+|---|---|
+| `Docente\DashboardController` | Dashboard, vista curso, estudiantes |
+| `Docente\PreguntaController` | Banco de preguntas CRUD |
+| `Docente\ExamenController` | CRUD exámenes, publicar, cerrar, resultados |
+| `Docente\ObservacionController` | Observaciones, exportar notas |
+
+### 5.3 Eventos, Listeners y Observers
+
+✅ **3 Eventos de dominio:**
+- `ExamenPublicado` → al publicar un examen
+- `IntentoFinalizado` → al finalizar un intento
+- `EstudianteMatriculado` → al matricular un estudiante
+
+✅ **3 Listeners:**
+- `NotificarExamenPublicado` → notifica a estudiantes matriculados
+- `NotificarIntentoFinalizado` → notifica resultado al estudiante
+- `NotificarMatricula` → confirma matrícula al estudiante
+
+✅ **1 Observer:**
+- `ExamenObserver` → auto-registra auditoría al crear/eliminar exámenes
+
+### 5.4 Localización Completa en Español
+
+✅ **Archivos creados en** `lang/es/`:
+- `auth.php` — mensajes de autenticación
+- `pagination.php` — mensajes de paginación
+- `passwords.php` — mensajes de contraseñas
+- `validation.php` — validaciones con atributos personalizados
+
+✅ **Config:** `locale => 'es'`, `faker_locale => 'es_PE'`
+
+### 5.5 Tests Feature Completos (57 tests)
+
+✅ **4 suites de test creados:**
+
+| Suite | Tests | Cobertura |
+|---|---|---|
+| `Auth\LoginTest` | 9 | Login, logout, bloqueo, redirects por rol |
+| `Admin\AdminTest` | 10 | Dashboard, CRUD usuarios/periodos/cursos/matrículas, auditorías |
+| `Docente\DocenteTest` | 8 | Dashboard, CRUD preguntas/exámenes, publicar, cerrar, autorización |
+| `Estudiante\EstudianteTest` | 9 | Dashboard, exámenes, intentos, respuestas, perfil, autorización |
+| `Policies\PolicyTest` | 19 | CursoPolicy + ExamenPolicy completo |
+
+### 5.6 Notificaciones (Mail vía Mailtrap)
+
+✅ **3 Notificaciones creadas:**
+- `ExamenDisponible` → email al publicar examen
+- `ResultadoExamen` → email con puntaje al finalizar intento
+- `MatriculaConfirmada` → email de confirmación de matrícula
+
+> Configurado con Mailtrap (sandbox) para pruebas. Cambiar a producción modificando `.env`.
+
+### 5.7 CI/CD con GitHub Actions
+
+✅ **Archivo:** `.github/workflows/tests.yml`
+
+Pipeline automatizado:
+1. Setup PHP 8.2 + SQLite
+2. Composer install (con cache)
+3. Node.js 20 + npm ci
+4. Build frontend (`npm run build`)
+5. Migraciones
+6. `php artisan test --parallel`
+
+### 5.8 API REST con Sanctum
+
+✅ **Paquete:** `laravel/sanctum v4.3`
+✅ **Trait:** `HasApiTokens` añadido a `User` model
+
+**Endpoints API creados en** `routes/api.php`:
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| POST | `/api/login` | Login con token |
+| POST | `/api/logout` | Cerrar sesión |
+| GET | `/api/me` | Perfil autenticado |
+| GET | `/api/estudiante/cursos` | Cursos del estudiante |
+| GET | `/api/estudiante/cursos/{id}/examenes` | Exámenes disponibles |
+| GET | `/api/estudiante/calificaciones` | Calificaciones |
+| GET | `/api/docente/cursos` | Cursos del docente |
+| GET | `/api/docente/cursos/{id}/examenes` | Exámenes del docente |
+| GET | `/api/docente/cursos/{id}/examenes/{id}/resultados` | Resultados |
+
+**Controllers API:**
+- `Api\AuthController` — login/logout/me
+- `Api\EstudianteApiController` — cursos, exámenes, calificaciones
+- `Api\DocenteApiController` — cursos, exámenes, resultados
+
+### 5.9 UserFactory Corregido
+
+✅ **Archivo:** `database/factories/UserFactory.php`
+- Campos corregidos: `nombres`, `apellidos`, `dni`, `fecha_nacimiento`, `sexo`
+- States: `administrador()`, `docente()`, `estudiante()`
+
+---
+
+## 📊 Resumen General Post-Auditoría
+
+| Área | Estado |
+|---|---|
+| Rate Limiting | ✅ Configurado |
+| Controllers SRP | ✅ 11 controllers especializados |
+| Events/Listeners | ✅ 3 eventos + 3 listeners + 1 observer |
+| Localización ES | ✅ Completo con atributos personalizados |
+| Tests Feature | ✅ 57 tests, 84 assertions |
+| Notificaciones | ✅ 3 notificaciones mail (Mailtrap) |
+| CI/CD | ✅ GitHub Actions pipeline |
+| API REST | ✅ Sanctum + 9 endpoints |
+| UserFactory | ✅ Corregido y funcional |6. **Segundo intento:**
    - Volver a exámenes
    - Debe mostrar "1 / 2" intentos restantes
    - Debe poder iniciar nuevo intento

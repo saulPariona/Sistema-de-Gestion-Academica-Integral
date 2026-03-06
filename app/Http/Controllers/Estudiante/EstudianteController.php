@@ -9,6 +9,7 @@ use App\Models\Curso;
 use App\Models\Examen;
 use App\Models\Intento;
 use App\Models\Respuesta;
+use App\Events\IntentoFinalizado;
 use App\Services\AuditoriaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,10 +33,7 @@ class EstudianteController extends Controller
 
             // Contar exámenes no iniciados por el estudiante
             $curso->examenesNuevos = $curso->examenesDisponibles->filter(function ($examen) {
-                return !Intento::where('examen_id', $examen->id)
-                    ->where('estudiante_id', Auth::id())
-                    ->exists();
-            })->count();
+                return !Intento::where('examen_id', $examen->id)->where('estudiante_id', Auth::id())->exists();})->count();
 
             // Contar exámenes con intentos pendientes
             $curso->examenesEnProgreso = Intento::whereIn('examen_id', $curso->examenesDisponibles->pluck('id'))
@@ -192,6 +190,7 @@ class EstudianteController extends Controller
                 'estado' => 'finalizado',
             ]);
             AuditoriaService::registrar('finalizar_examen', 'Intento', $intento->id);
+            IntentoFinalizado::dispatch($intento);
         }
 
         return redirect()->route('estudiante.resultado-examen', [$curso, $examen, $intento->id]);

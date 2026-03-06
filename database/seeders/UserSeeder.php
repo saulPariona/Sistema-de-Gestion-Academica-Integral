@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
@@ -193,8 +194,9 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($estudiantes as $i => $e) {
-            $slug = strtolower(str_replace(' ', '.', explode(' ', $e['nombres'])[0])) . '.' .
-                    strtolower(str_replace(' ', '', explode(' ', $e['apellidos'])[0]));
+            $nombre = strtolower(Str::ascii(explode(' ', $e['nombres'])[0]));
+            $apellido = strtolower(Str::ascii(explode(' ', $e['apellidos'])[0]));
+            $slug = $nombre . '.' . $apellido;
 
             User::create(array_merge($e, [
                 'email' => $slug . '@colegiomp.edu.pe',

@@ -54,6 +54,14 @@ class ExamenPolicy
         if (!$matriculado) {
             return false;
         }
+        $tieneIntentoActivo = $examen->intentos()
+            ->where('estudiante_id', $user->id)
+            ->where('estado', 'en_progreso')
+            ->exists();
+
+        if ($tieneIntentoActivo) {
+            return true;
+        }
 
         $intentosUsados = $examen->intentos()->where('estudiante_id', $user->id)->count();
         return $intentosUsados < $examen->intentos_permitidos;
