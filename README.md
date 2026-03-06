@@ -30,7 +30,7 @@
 
 ---
 
-## 📸 Capturas de Pantalla
+## Capturas de Pantalla
 
 ### Dashboard del Administrador
 <p align="center">
