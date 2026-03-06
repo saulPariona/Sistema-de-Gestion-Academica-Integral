@@ -73,7 +73,7 @@ Si usas **XAMPP**, estas extensiones ya vienen habilitadas. Si usas PHP standalo
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/TU_USUARIO/ColegioMaxPlanck.git
+git clone https://github.com/saulPariona/Sistema-de-Gesti-n-Acad-mica-Integral.git
 cd ColegioMaxPlanck
 ```
 
