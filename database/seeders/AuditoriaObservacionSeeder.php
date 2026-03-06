@@ -8,221 +8,274 @@ use App\Models\Observacion;
 use App\Models\User;
 use App\Models\Curso;
 use App\Models\Periodo;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class AuditoriaObservacionSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     public function run(): void
     {
         $admin = User::where('rol', 'administrador')->first();
-        $docentes = User::where('rol', 'docente')->get();
+        $docentes = User::where('rol', 'docente')->where('estado', 'activo')->get();
         $estudiantes = User::where('rol', 'estudiante')->get();
         $periodoActivo = Periodo::where('nombre', '2026-I')->first();
         $cursos = Curso::where('periodo_id', $periodoActivo->id)->with('docentes')->get();
 
-        // ==================== AUDITORÍAS ====================
-        $acciones = [
-            [
+        $this->command->info('  → Creando auditorías, historial de roles y observaciones...');
+
+        $this->crearAuditorias($admin, $docentes, $estudiantes, $periodoActivo);
+        $this->crearHistorialRoles($admin, $docentes);
+        $this->crearObservaciones($docentes, $estudiantes, $cursos);
+    }
+
+    private function crearAuditorias($admin, $docentes, $estudiantes, $periodoActivo): void
+    {
+        $acciones = [];
+
+        // Auditorías de creación de usuarios (10 registros)
+        for ($i = 0; $i < 10; $i++) {
+            $est = $estudiantes->values()->get($i);
+            if (!$est) continue;
+
+            $acciones[] = [
                 'user_id' => $admin->id,
                 'accion' => 'crear_usuario',
                 'modelo' => 'User',
-                'modelo_id' => $estudiantes->first()->id,
+                'modelo_id' => $est->id,
                 'datos_anteriores' => null,
-                'datos_nuevos' => ['nombres' => 'María Fernanda', 'apellidos' => 'Pérez Sánchez', 'rol' => 'estudiante', 'estado' => 'activo'],
+                'datos_nuevos' => json_encode(['nombres' => $est->nombres, 'apellidos' => $est->apellidos, 'rol' => 'estudiante', 'estado' => 'activo']),
                 'ip' => '192.168.1.10',
-                'created_at' => '2026-02-25 09:15:00',
-            ],
-            [
-                'user_id' => $admin->id,
-                'accion' => 'crear_usuario',
-                'modelo' => 'User',
-                'modelo_id' => $estudiantes->skip(1)->first()->id,
-                'datos_anteriores' => null,
-                'datos_nuevos' => ['nombres' => 'Juan Diego', 'apellidos' => 'López Torres', 'rol' => 'estudiante', 'estado' => 'activo'],
-                'ip' => '192.168.1.10',
-                'created_at' => '2026-02-25 09:20:00',
-            ],
-            [
+                'created_at' => '2026-02-' . str_pad(15 + $i, 2, '0', STR_PAD_LEFT) . ' 09:' . str_pad($i * 5, 2, '0', STR_PAD_LEFT) . ':00',
+                'updated_at' => '2026-02-' . str_pad(15 + $i, 2, '0', STR_PAD_LEFT) . ' 09:' . str_pad($i * 5, 2, '0', STR_PAD_LEFT) . ':00',
+            ];
+        }
+
+        // Auditorías de actualización de usuarios (8 registros)
+        for ($i = 0; $i < 8; $i++) {
+            $est = $estudiantes->values()->get(10 + $i);
+            if (!$est) continue;
+
+            $acciones[] = [
                 'user_id' => $admin->id,
                 'accion' => 'actualizar_usuario',
                 'modelo' => 'User',
-                'modelo_id' => $estudiantes->skip(5)->first()->id,
-                'datos_anteriores' => ['telefono' => null, 'direccion' => null],
-                'datos_nuevos' => ['telefono' => '987111222', 'direccion' => 'Av. Javier Prado 1200, San Isidro'],
+                'modelo_id' => $est->id,
+                'datos_anteriores' => json_encode(['telefono' => null, 'direccion' => null]),
+                'datos_nuevos' => json_encode(['telefono' => '987' . str_pad($i, 6, '1', STR_PAD_LEFT), 'direccion' => 'Av. Ejemplo ' . ($i * 100 + 200)]),
                 'ip' => '192.168.1.10',
-                'created_at' => '2026-03-02 10:30:00',
-            ],
-            [
+                'created_at' => '2026-03-0' . ($i + 1) . ' 10:30:00',
+                'updated_at' => '2026-03-0' . ($i + 1) . ' 10:30:00',
+            ];
+        }
+
+        // Toggle estado (5 registros)
+        $inactivos = $estudiantes->where('estado', 'inactivo')->take(3);
+        foreach ($inactivos as $idx => $est) {
+            $acciones[] = [
                 'user_id' => $admin->id,
                 'accion' => 'toggle_estado',
                 'modelo' => 'User',
-                'modelo_id' => $estudiantes->skip(40)->first()?->id ?? $estudiantes->last()->id,
-                'datos_anteriores' => ['estado' => 'activo'],
-                'datos_nuevos' => ['estado' => 'inactivo'],
+                'modelo_id' => $est->id,
+                'datos_anteriores' => json_encode(['estado' => 'activo']),
+                'datos_nuevos' => json_encode(['estado' => 'inactivo']),
                 'ip' => '192.168.1.10',
-                'created_at' => '2026-03-05 14:00:00',
-            ],
-            [
-                'user_id' => $docentes->first()->id,
-                'accion' => 'crear_examen',
-                'modelo' => 'Examen',
-                'modelo_id' => 1,
-                'datos_anteriores' => null,
-                'datos_nuevos' => ['titulo' => 'Examen Semanal S-01 - Álgebra', 'estado' => 'creado'],
-                'ip' => '192.168.1.15',
-                'created_at' => '2026-03-04 16:00:00',
-            ],
-            [
-                'user_id' => $docentes->first()->id,
-                'accion' => 'actualizar_examen',
-                'modelo' => 'Examen',
-                'modelo_id' => 1,
-                'datos_anteriores' => ['estado' => 'creado'],
-                'datos_nuevos' => ['estado' => 'publicado'],
-                'ip' => '192.168.1.15',
-                'created_at' => '2026-03-06 08:00:00',
-            ],
-            [
-                'user_id' => $docentes->first()->id,
-                'accion' => 'actualizar_examen',
-                'modelo' => 'Examen',
-                'modelo_id' => 1,
-                'datos_anteriores' => ['estado' => 'publicado'],
-                'datos_nuevos' => ['estado' => 'cerrado'],
-                'ip' => '192.168.1.15',
-                'created_at' => '2026-03-08 00:00:00',
-            ],
-            [
-                'user_id' => $docentes->skip(1)->first()->id,
-                'accion' => 'crear_pregunta',
-                'modelo' => 'Pregunta',
-                'modelo_id' => 1,
-                'datos_anteriores' => null,
-                'datos_nuevos' => ['texto' => 'Halla el MCD de 36 y 48.', 'dificultad' => 'facil'],
-                'ip' => '192.168.1.20',
-                'created_at' => '2026-03-03 11:30:00',
-            ],
-            [
-                'user_id' => $admin->id,
-                'accion' => 'crear_periodo',
-                'modelo' => 'Periodo',
-                'modelo_id' => $periodoActivo->id,
-                'datos_anteriores' => null,
-                'datos_nuevos' => ['nombre' => '2026-I', 'estado' => 'activo'],
-                'ip' => '192.168.1.10',
-                'created_at' => '2026-02-15 09:00:00',
-            ],
-            [
-                'user_id' => $estudiantes->first()->id,
-                'accion' => 'actualizar_perfil',
-                'modelo' => 'User',
-                'modelo_id' => $estudiantes->first()->id,
-                'datos_anteriores' => ['telefono' => null],
-                'datos_nuevos' => ['telefono' => '999888777'],
-                'ip' => '192.168.1.50',
-                'created_at' => '2026-03-10 15:45:00',
-            ],
-            [
-                'user_id' => $docentes->skip(3)->first()->id,
-                'accion' => 'crear_examen',
-                'modelo' => 'Examen',
-                'modelo_id' => 2,
-                'datos_anteriores' => null,
-                'datos_nuevos' => ['titulo' => 'Examen Semanal S-01 - Trigonometría', 'estado' => 'creado'],
-                'ip' => '192.168.1.25',
-                'created_at' => '2026-03-04 17:30:00',
-            ],
-            [
-                'user_id' => $admin->id,
-                'accion' => 'crear_curso',
-                'modelo' => 'Curso',
-                'modelo_id' => 1,
-                'datos_anteriores' => null,
-                'datos_nuevos' => ['nombre' => 'Álgebra', 'periodo' => '2026-I'],
-                'ip' => '192.168.1.10',
-                'created_at' => '2026-02-20 10:00:00',
-            ],
-            [
-                'user_id' => $docentes->skip(4)->first()->id,
-                'accion' => 'actualizar_pregunta',
-                'modelo' => 'Pregunta',
-                'modelo_id' => 5,
-                'datos_anteriores' => ['texto' => 'Un cuerpo cae desde 45 m...', 'dificultad' => 'facil'],
-                'datos_nuevos' => ['texto' => 'Un cuerpo cae libremente desde 45 m de altura. ¿Cuánto tarda en llegar al suelo? (g = 10 m/s²)', 'dificultad' => 'medio'],
-                'ip' => '192.168.1.30',
-                'created_at' => '2026-03-06 12:15:00',
-            ],
-            [
-                'user_id' => $admin->id,
-                'accion' => 'actualizar_usuario',
-                'modelo' => 'User',
-                'modelo_id' => $docentes->skip(2)->first()->id,
-                'datos_anteriores' => ['grado_academico' => 'Licenciado en Geometría'],
-                'datos_nuevos' => ['grado_academico' => 'Magíster en Didáctica de la Matemática'],
-                'ip' => '192.168.1.10',
-                'created_at' => '2026-03-01 09:00:00',
-            ],
-            [
-                'user_id' => $estudiantes->skip(2)->first()->id,
-                'accion' => 'actualizar_perfil',
-                'modelo' => 'User',
-                'modelo_id' => $estudiantes->skip(2)->first()->id,
-                'datos_anteriores' => ['direccion' => null],
-                'datos_nuevos' => ['direccion' => 'Jr. Huallaga 350, Cercado de Lima'],
-                'ip' => '192.168.1.55',
-                'created_at' => '2026-03-12 16:20:00',
-            ],
-        ];
-
-        foreach ($acciones as $accion) {
-            Auditoria::create($accion);
+                'created_at' => '2026-03-05 14:' . str_pad($idx * 10, 2, '0', STR_PAD_LEFT) . ':00',
+                'updated_at' => '2026-03-05 14:' . str_pad($idx * 10, 2, '0', STR_PAD_LEFT) . ':00',
+            ];
         }
 
-        // ==================== HISTORIAL DE ROLES ====================
-        // Un docente que antes era estudiante
-        $docentePromovido = $docentes->last();
-        HistorialRol::create([
-            'user_id' => $docentePromovido->id,
-            'rol_anterior' => 'estudiante',
-            'rol_nuevo' => 'docente',
-            'cambiado_por' => $admin->id,
-            'created_at' => '2026-01-15 10:00:00',
-        ]);
+        $bloqueados = $estudiantes->where('estado', 'bloqueado')->take(2);
+        foreach ($bloqueados as $idx => $est) {
+            $acciones[] = [
+                'user_id' => $admin->id,
+                'accion' => 'toggle_estado',
+                'modelo' => 'User',
+                'modelo_id' => $est->id,
+                'datos_anteriores' => json_encode(['estado' => 'activo']),
+                'datos_nuevos' => json_encode(['estado' => 'bloqueado']),
+                'ip' => '192.168.1.10',
+                'created_at' => '2026-03-05 15:' . str_pad($idx * 15, 2, '0', STR_PAD_LEFT) . ':00',
+                'updated_at' => '2026-03-05 15:' . str_pad($idx * 15, 2, '0', STR_PAD_LEFT) . ':00',
+            ];
+        }
 
-        // ==================== OBSERVACIONES ====================
-        $observacionesData = [
-            ['estudiante_idx' => 0, 'texto' => 'Excelente participación en clase. Demuestra comprensión profunda de los temas de ecuaciones.'],
-            ['estudiante_idx' => 1, 'texto' => 'Necesita reforzar el tema de factorización. Se recomienda práctica adicional.'],
-            ['estudiante_idx' => 2, 'texto' => 'Muy buena actitud y disposición para aprender. Destaca en resolución de problemas.'],
-            ['estudiante_idx' => 3, 'texto' => 'Presenta dificultades con las identidades trigonométricas. Programar tutoría personalizada.'],
-            ['estudiante_idx' => 4, 'texto' => 'Ha mejorado notablemente en física. Su último examen refleja mejor comprensión.'],
-            ['estudiante_idx' => 5, 'texto' => 'Inasistencias recurrentes. Comunicarse con el apoderado para coordinar seguimiento.'],
-            ['estudiante_idx' => 6, 'texto' => 'Lidera el grupo de estudio. Ayuda a compañeros con dificultades en aritmética.'],
-            ['estudiante_idx' => 7, 'texto' => 'Buen desempeño en razonamiento verbal. Potencial para concursos de comprensión lectora.'],
-            ['estudiante_idx' => 8, 'texto' => 'Entrega puntual de tareas. Necesita mejorar en la redacción de procedimientos.'],
-            ['estudiante_idx' => 9, 'texto' => 'Muestra interés especial en química orgánica. Sugerir material complementario.'],
-            ['estudiante_idx' => 10, 'texto' => 'Bajo rendimiento en geometría. Se recomienda repasar propiedades de triángulos y cuadriláteros.'],
-            ['estudiante_idx' => 11, 'texto' => 'Estudiante responsable. Mejoró su promedio de 12 a 16 en el último mes.'],
-            ['estudiante_idx' => 0, 'texto' => 'Ganadora del concurso interno de matemáticas. Representará al colegio en la olimpiada regional.'],
-            ['estudiante_idx' => 3, 'texto' => 'Se observa mejoría después de las tutorías. Continuar con el programa de refuerzo.'],
-            ['estudiante_idx' => 15, 'texto' => 'Dificultades en la comprensión de problemas tipo admisión. Sugerir más práctica con simulacros.'],
+        // Creación de exámenes (8 registros, uno por curso)
+        foreach ($docentes->take(8) as $idx => $docente) {
+            $acciones[] = [
+                'user_id' => $docente->id,
+                'accion' => 'crear_examen',
+                'modelo' => 'Examen',
+                'modelo_id' => $idx + 1,
+                'datos_anteriores' => null,
+                'datos_nuevos' => json_encode(['titulo' => 'Examen Semanal S-01 - ' . $docente->especialidad, 'estado' => 'creado']),
+                'ip' => '192.168.1.' . (15 + $idx),
+                'created_at' => '2026-03-04 ' . str_pad(16 + ($idx % 3), 2, '0', STR_PAD_LEFT) . ':00:00',
+                'updated_at' => '2026-03-04 ' . str_pad(16 + ($idx % 3), 2, '0', STR_PAD_LEFT) . ':00:00',
+            ];
+        }
+
+        // Cambios de estado de examen (6 registros: publicar + cerrar)
+        for ($i = 0; $i < 3; $i++) {
+            $docente = $docentes->values()->get($i);
+            if (!$docente) continue;
+
+            $acciones[] = [
+                'user_id' => $docente->id,
+                'accion' => 'actualizar_examen',
+                'modelo' => 'Examen',
+                'modelo_id' => $i + 1,
+                'datos_anteriores' => json_encode(['estado' => 'creado']),
+                'datos_nuevos' => json_encode(['estado' => 'publicado']),
+                'ip' => '192.168.1.' . (15 + $i),
+                'created_at' => '2026-03-06 08:' . str_pad($i * 10, 2, '0', STR_PAD_LEFT) . ':00',
+                'updated_at' => '2026-03-06 08:' . str_pad($i * 10, 2, '0', STR_PAD_LEFT) . ':00',
+            ];
+            $acciones[] = [
+                'user_id' => $docente->id,
+                'accion' => 'actualizar_examen',
+                'modelo' => 'Examen',
+                'modelo_id' => $i + 1,
+                'datos_anteriores' => json_encode(['estado' => 'publicado']),
+                'datos_nuevos' => json_encode(['estado' => 'cerrado']),
+                'ip' => '192.168.1.' . (15 + $i),
+                'created_at' => '2026-03-08 00:' . str_pad($i * 5, 2, '0', STR_PAD_LEFT) . ':00',
+                'updated_at' => '2026-03-08 00:' . str_pad($i * 5, 2, '0', STR_PAD_LEFT) . ':00',
+            ];
+        }
+
+        // Creación de preguntas (4 registros)
+        for ($i = 0; $i < 4; $i++) {
+            $docente = $docentes->values()->get($i + 1);
+            if (!$docente) continue;
+
+            $acciones[] = [
+                'user_id' => $docente->id,
+                'accion' => 'crear_pregunta',
+                'modelo' => 'Pregunta',
+                'modelo_id' => $i + 1,
+                'datos_anteriores' => null,
+                'datos_nuevos' => json_encode(['texto' => 'Pregunta de ejemplo ' . ($i + 1), 'dificultad' => ['facil', 'medio', 'dificil'][$i % 3]]),
+                'ip' => '192.168.1.' . (20 + $i),
+                'created_at' => '2026-03-03 11:' . str_pad(30 + $i * 5, 2, '0', STR_PAD_LEFT) . ':00',
+                'updated_at' => '2026-03-03 11:' . str_pad(30 + $i * 5, 2, '0', STR_PAD_LEFT) . ':00',
+            ];
+        }
+
+        // Creación de período
+        $acciones[] = [
+            'user_id' => $admin->id,
+            'accion' => 'crear_periodo',
+            'modelo' => 'Periodo',
+            'modelo_id' => $periodoActivo->id,
+            'datos_anteriores' => null,
+            'datos_nuevos' => json_encode(['nombre' => '2026-I', 'estado' => 'activo']),
+            'ip' => '192.168.1.10',
+            'created_at' => '2026-02-15 09:00:00',
+            'updated_at' => '2026-02-15 09:00:00',
         ];
 
-        foreach ($observacionesData as $obsData) {
-            $estudiante = $estudiantes->values()->get($obsData['estudiante_idx']);
+        // Actualización de perfiles por estudiantes (5 registros)
+        for ($i = 0; $i < 5; $i++) {
+            $est = $estudiantes->values()->get($i * 3);
+            if (!$est) continue;
+
+            $acciones[] = [
+                'user_id' => $est->id,
+                'accion' => 'actualizar_perfil',
+                'modelo' => 'User',
+                'modelo_id' => $est->id,
+                'datos_anteriores' => json_encode(['telefono' => null]),
+                'datos_nuevos' => json_encode(['telefono' => '999' . str_pad($i, 6, '8', STR_PAD_LEFT)]),
+                'ip' => '192.168.1.' . (50 + $i),
+                'created_at' => '2026-03-' . str_pad(10 + $i, 2, '0', STR_PAD_LEFT) . ' 15:45:00',
+                'updated_at' => '2026-03-' . str_pad(10 + $i, 2, '0', STR_PAD_LEFT) . ' 15:45:00',
+            ];
+        }
+
+        Auditoria::insert($acciones);
+    }
+
+    private function crearHistorialRoles($admin, $docentes): void
+    {
+        // 3 docentes que fueron promovidos desde estudiante
+        $docentesPromovidos = $docentes->take(3)->reverse();
+        $batch = [];
+
+        foreach ($docentesPromovidos as $idx => $docente) {
+            $batch[] = [
+                'user_id' => $docente->id,
+                'rol_anterior' => 'estudiante',
+                'rol_nuevo' => 'docente',
+                'cambiado_por' => $admin->id,
+                'created_at' => '2026-01-' . str_pad(10 + $idx * 5, 2, '0', STR_PAD_LEFT) . ' 10:00:00',
+                'updated_at' => '2026-01-' . str_pad(10 + $idx * 5, 2, '0', STR_PAD_LEFT) . ' 10:00:00',
+            ];
+        }
+
+        HistorialRol::insert($batch);
+    }
+
+    /**
+     * ~150 observaciones distribuidas entre docentes y estudiantes.
+     */
+    private function crearObservaciones($docentes, $estudiantes, $cursos): void
+    {
+        $textos = [
+            'Excelente participación en clase. Demuestra comprensión profunda de los temas.',
+            'Necesita reforzar los ejercicios prácticos. Se recomienda práctica adicional.',
+            'Muy buena actitud y disposición para aprender. Destaca en resolución de problemas.',
+            'Presenta dificultades con los temas avanzados. Programar tutoría personalizada.',
+            'Ha mejorado notablemente. Su último examen refleja mejor comprensión.',
+            'Inasistencias recurrentes. Comunicarse con el apoderado para coordinar seguimiento.',
+            'Lidera el grupo de estudio. Ayuda a compañeros con dificultades.',
+            'Buen desempeño general. Potencial para concursos académicos.',
+            'Entrega puntual de tareas. Necesita mejorar en la redacción de procedimientos.',
+            'Muestra interés especial en temas avanzados. Sugerir material complementario.',
+            'Bajo rendimiento en evaluaciones. Se recomienda repasar temas fundamentales.',
+            'Estudiante responsable. Mejoró su promedio significativamente.',
+            'Ganador(a) del concurso interno de la materia. Representará al colegio.',
+            'Se observa mejoría después de las tutorías. Continuar con el programa de refuerzo.',
+            'Dificultades en la comprensión de problemas tipo admisión. Necesita más simulacros.',
+            'Excelente comportamiento y colaboración con sus compañeros.',
+            'Participa activamente en las clases virtuales y presenciales.',
+            'Tiene potencial sobresaliente pero necesita mayor dedicación en tareas.',
+            'Domina los conceptos básicos, debe avanzar a nivel intermedio.',
+            'Se recomienda asistir a las sesiones de refuerzo los sábados.',
+        ];
+
+        $batch = [];
+        $estValues = $estudiantes->where('estado', 'activo')->values();
+        $now = now();
+
+        for ($i = 0; $i < 150; $i++) {
+            $estudiante = $estValues->get($i % $estValues->count());
             if (!$estudiante) continue;
 
-            // Elegir un curso y su docente al azar
-            $curso = $cursos->random();
+            $curso = $cursos->values()->get($i % $cursos->count());
+            if (!$curso) continue;
+
             $docente = $curso->docentes->first();
             if (!$docente) continue;
 
-            Observacion::create([
+            $batch[] = [
                 'docente_id' => $docente->id,
                 'estudiante_id' => $estudiante->id,
                 'curso_id' => $curso->id,
-                'texto' => $obsData['texto'],
-            ]);
+                'texto' => $textos[$i % count($textos)],
+                'created_at' => $now->copy()->subDays($i % 30),
+                'updated_at' => $now->copy()->subDays($i % 30),
+            ];
+
+            if (count($batch) >= 100) {
+                Observacion::insert($batch);
+                $batch = [];
+            }
+        }
+
+        if (!empty($batch)) {
+            Observacion::insert($batch);
         }
     }
 }

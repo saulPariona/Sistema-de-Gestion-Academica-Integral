@@ -6,93 +6,234 @@ use App\Models\Curso;
 use App\Models\Matricula;
 use App\Models\Periodo;
 use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class CursoMatriculaSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     public function run(): void
     {
         $periodoActivo = Periodo::where('nombre', '2026-I')->first();
         $periodoAnterior = Periodo::where('nombre', '2025-II')->first();
+        $periodoIntensivo = Periodo::where('nombre', 'Ciclo Intensivo 2026')->first();
 
-        $docentes = User::where('rol', 'docente')->get();
-        $estudiantes = User::where('rol', 'estudiante')->where('estado', 'activo')->get();
+        // Docentes principales (primeros 8 con especialidades únicas)
+        $docentesPrincipales = User::where('rol', 'docente')
+            ->where('estado', 'activo')
+            ->whereIn('dni', ['12345678', '23456789', '34567890', '45678901', '56789012', '67890123', '78901234', '89012345'])
+            ->get();
 
-        // Mapeo de especialidad → nombre del curso para período activo
+        // Docentes adicionales activos
+        $docentesAdicionales = User::where('rol', 'docente')
+            ->where('estado', 'activo')
+            ->whereNotIn('id', $docentesPrincipales->pluck('id'))
+            ->get();
+
+        $estudiantesActivos = User::where('rol', 'estudiante')
+            ->where('estado', 'activo')
+            ->pluck('id')
+            ->toArray();
+
+        $this->command->info("  → " . count($estudiantesActivos) . " estudiantes activos para matricular");
+
+        // === CURSOS PERÍODO ACTIVO (2026-I) ===
+        $this->crearCursosPeriodoActivo($periodoActivo, $docentesPrincipales, $docentesAdicionales);
+
+        // === CURSOS PERÍODO ANTERIOR (2025-II) ===
+        $this->crearCursosPeriodoAnterior($periodoAnterior, $docentesPrincipales);
+
+        // === CURSOS CICLO INTENSIVO ===
+        $this->crearCursosCicloIntensivo($periodoIntensivo, $docentesPrincipales);
+
+        // === MATRÍCULAS MASIVAS ===
+        $this->matricularPeriodoActivo($periodoActivo, $estudiantesActivos);
+        $this->matricularPeriodoAnterior($periodoAnterior, $estudiantesActivos);
+        $this->matricularCicloIntensivo($periodoIntensivo, $estudiantesActivos);
+    }
+
+    private function crearCursosPeriodoActivo(Periodo $periodo, $docentesPrincipales, $docentesAdicionales): void
+    {
         $cursosData = [
-            'Álgebra'                   => ['nombre' => 'Álgebra',                     'descripcion' => 'Ecuaciones, inecuaciones, funciones y polinomios para admisión universitaria'],
-            'Aritmética'                => ['nombre' => 'Aritmética',                   'descripcion' => 'Números, divisibilidad, MCM-MCD, fracciones, porcentajes y promedios'],
-            'Geometría'                 => ['nombre' => 'Geometría',                    'descripcion' => 'Geometría plana, triángulos, cuadriláteros, circunferencia y áreas'],
-            'Trigonometría'             => ['nombre' => 'Trigonometría',                 'descripcion' => 'Razones trigonométricas, identidades, ecuaciones y resolución de triángulos'],
-            'Física'                    => ['nombre' => 'Física',                       'descripcion' => 'Mecánica, termodinámica, ondas, electricidad y magnetismo'],
-            'Química'                   => ['nombre' => 'Química',                      'descripcion' => 'Estructura atómica, tabla periódica, enlace químico, estequiometría'],
-            'Razonamiento Matemático'   => ['nombre' => 'Razonamiento Matemático',      'descripcion' => 'Lógica, operadores, sucesiones, conteo, certeza y ordenamiento'],
-            'Razonamiento Verbal'       => ['nombre' => 'Razonamiento Verbal',          'descripcion' => 'Comprensión lectora, analogías, sinónimos, antónimos y oraciones eliminadas'],
+            'Álgebra'                 => 'Ecuaciones, inecuaciones, funciones y polinomios para admisión universitaria',
+            'Aritmética'              => 'Números, divisibilidad, MCM-MCD, fracciones, porcentajes y promedios',
+            'Geometría'               => 'Geometría plana, triángulos, cuadriláteros, circunferencia y áreas',
+            'Trigonometría'           => 'Razones trigonométricas, identidades, ecuaciones y resolución de triángulos',
+            'Física'                  => 'Mecánica, termodinámica, ondas, electricidad y magnetismo',
+            'Química'                 => 'Estructura atómica, tabla periódica, enlace químico, estequiometría',
+            'Razonamiento Matemático' => 'Lógica, operadores, sucesiones, conteo, certeza y ordenamiento',
+            'Razonamiento Verbal'     => 'Comprensión lectora, analogías, sinónimos, antónimos y oraciones eliminadas',
         ];
 
-        // === CURSOS PARA PERÍODO ACTIVO (2026-I) ===
-        foreach ($docentes as $docente) {
+        foreach ($docentesPrincipales as $docente) {
             if (isset($cursosData[$docente->especialidad])) {
-                $data = $cursosData[$docente->especialidad];
                 $curso = Curso::create([
-                    'nombre' => $data['nombre'],
-                    'descripcion' => $data['descripcion'],
-                    'periodo_id' => $periodoActivo->id,
+                    'nombre' => $docente->especialidad,
+                    'descripcion' => $cursosData[$docente->especialidad],
+                    'periodo_id' => $periodo->id,
                 ]);
                 $curso->docentes()->attach($docente->id);
+
+                // Asignar 1-2 docentes adicionales de la misma especialidad como co-docentes
+                $coDocentes = $docentesAdicionales
+                    ->where('especialidad', $docente->especialidad)
+                    ->take(2);
+                foreach ($coDocentes as $coDocente) {
+                    $curso->docentes()->attach($coDocente->id);
+                }
             }
         }
+    }
 
-        // === CURSOS PARA PERÍODO ANTERIOR (2025-II) - solo 4 cursos ===
-        $cursosAnteriores = ['Álgebra', 'Aritmética', 'Física', 'Razonamiento Verbal'];
-        foreach ($cursosAnteriores as $nombreCurso) {
-            $docente = $docentes->firstWhere('especialidad', $nombreCurso);
+    private function crearCursosPeriodoAnterior(Periodo $periodo, $docentesPrincipales): void
+    {
+        $cursosAnteriores = [
+            'Álgebra'              => 'Ecuaciones, inecuaciones, funciones y polinomios para admisión universitaria',
+            'Aritmética'           => 'Números, divisibilidad, MCM-MCD, fracciones, porcentajes y promedios',
+            'Física'               => 'Mecánica, termodinámica, ondas, electricidad y magnetismo',
+            'Razonamiento Verbal'  => 'Comprensión lectora, analogías, sinónimos, antónimos y oraciones eliminadas',
+        ];
+
+        foreach ($cursosAnteriores as $nombre => $desc) {
+            $docente = $docentesPrincipales->firstWhere('especialidad', $nombre);
             if ($docente) {
                 $curso = Curso::create([
-                    'nombre' => $nombreCurso,
-                    'descripcion' => $cursosData[$nombreCurso]['descripcion'] ?? '',
-                    'periodo_id' => $periodoAnterior->id,
+                    'nombre' => $nombre,
+                    'descripcion' => $desc,
+                    'periodo_id' => $periodo->id,
                 ]);
                 $curso->docentes()->attach($docente->id);
             }
         }
+    }
 
-        // === MATRÍCULAS PERÍODO ACTIVO ===
-        $cursosActivos = Curso::where('periodo_id', $periodoActivo->id)->get();
+    private function crearCursosCicloIntensivo(Periodo $periodo, $docentesPrincipales): void
+    {
+        $cursosIntensivos = [
+            'Álgebra'    => 'Repaso intensivo de álgebra para refuerzo vacacional',
+            'Geometría'  => 'Repaso intensivo de geometría para refuerzo vacacional',
+            'Física'     => 'Repaso intensivo de física para refuerzo vacacional',
+        ];
 
-        // Matricular a todos los estudiantes activos en todos los cursos del período activo
-        foreach ($estudiantes as $est) {
-            foreach ($cursosActivos as $curso) {
-                Matricula::create([
-                    'estudiante_id' => $est->id,
-                    'curso_id' => $curso->id,
-                    'periodo_id' => $periodoActivo->id,
-                    'estado' => 'activa',
+        foreach ($cursosIntensivos as $nombre => $desc) {
+            $docente = $docentesPrincipales->firstWhere('especialidad', $nombre);
+            if ($docente) {
+                $curso = Curso::create([
+                    'nombre' => $nombre,
+                    'descripcion' => $desc,
+                    'periodo_id' => $periodo->id,
                 ]);
+                $curso->docentes()->attach($docente->id);
+            }
+        }
+    }
+
+    /**
+     * Todos los estudiantes activos → 8 cursos del período activo.
+     * Genera ~970 × 8 = ~7760 matrículas.
+     */
+    private function matricularPeriodoActivo(Periodo $periodo, array $estudiantesIds): void
+    {
+        $cursos = Curso::where('periodo_id', $periodo->id)->pluck('id')->toArray();
+        $this->command->info("  → Matriculando " . count($estudiantesIds) . " estudiantes en " . count($cursos) . " cursos (período activo)...");
+
+        $batch = [];
+        $now = now();
+
+        foreach ($estudiantesIds as $estId) {
+            foreach ($cursos as $cursoId) {
+                $batch[] = [
+                    'estudiante_id' => $estId,
+                    'curso_id' => $cursoId,
+                    'periodo_id' => $periodo->id,
+                    'estado' => 'activa',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+
+                if (count($batch) >= 500) {
+                    Matricula::insert($batch);
+                    $batch = [];
+                }
             }
         }
 
-        // === MATRÍCULAS PERÍODO ANTERIOR (solo 20 estudiantes en esos 4 cursos) ===
-        $cursosAnt = Curso::where('periodo_id', $periodoAnterior->id)->get();
-        $estudiantesAnt = $estudiantes->take(20);
+        if (!empty($batch)) {
+            Matricula::insert($batch);
+        }
+    }
 
-        foreach ($estudiantesAnt as $est) {
-            foreach ($cursosAnt as $curso) {
-                Matricula::create([
-                    'estudiante_id' => $est->id,
-                    'curso_id' => $curso->id,
-                    'periodo_id' => $periodoAnterior->id,
-                    'estado' => 'activa',
-                ]);
+    /**
+     * Primeros 200 estudiantes → 4 cursos del período anterior.
+     * ~20 retirados para variedad.
+     */
+    private function matricularPeriodoAnterior(Periodo $periodo, array $estudiantesIds): void
+    {
+        $cursos = Curso::where('periodo_id', $periodo->id)->pluck('id')->toArray();
+        $estudiantesAnt = array_slice($estudiantesIds, 0, 200);
+
+        $this->command->info("  → Matriculando " . count($estudiantesAnt) . " estudiantes en " . count($cursos) . " cursos (período anterior)...");
+
+        $batch = [];
+        $now = now();
+
+        foreach ($estudiantesAnt as $idx => $estId) {
+            foreach ($cursos as $cursoId) {
+                $batch[] = [
+                    'estudiante_id' => $estId,
+                    'curso_id' => $cursoId,
+                    'periodo_id' => $periodo->id,
+                    'estado' => $idx >= 180 ? 'retirada' : 'activa',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+
+                if (count($batch) >= 500) {
+                    Matricula::insert($batch);
+                    $batch = [];
+                }
             }
         }
 
-        // 2 estudiantes retirados en período anterior
-        $retirados = $estudiantes->slice(18, 2);
-        foreach ($retirados as $est) {
-            Matricula::where('estudiante_id', $est->id)
-                ->where('periodo_id', $periodoAnterior->id)
-                ->update(['estado' => 'retirada']);
+        if (!empty($batch)) {
+            Matricula::insert($batch);
+        }
+    }
+
+    /**
+     * Primeros 100 estudiantes → 3 cursos del ciclo intensivo.
+     */
+    private function matricularCicloIntensivo(Periodo $periodo, array $estudiantesIds): void
+    {
+        $cursos = Curso::where('periodo_id', $periodo->id)->pluck('id')->toArray();
+        $estudiantesInt = array_slice($estudiantesIds, 0, 100);
+
+        $this->command->info("  → Matriculando " . count($estudiantesInt) . " estudiantes en " . count($cursos) . " cursos (ciclo intensivo)...");
+
+        $batch = [];
+        $now = now();
+
+        foreach ($estudiantesInt as $estId) {
+            foreach ($cursos as $cursoId) {
+                $batch[] = [
+                    'estudiante_id' => $estId,
+                    'curso_id' => $cursoId,
+                    'periodo_id' => $periodo->id,
+                    'estado' => 'activa',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+
+                if (count($batch) >= 500) {
+                    Matricula::insert($batch);
+                    $batch = [];
+                }
+            }
+        }
+
+        if (!empty($batch)) {
+            Matricula::insert($batch);
         }
     }
 }
