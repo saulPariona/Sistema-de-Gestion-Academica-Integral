@@ -30,9 +30,34 @@
 
 ---
 
+## 📸 Capturas de Pantalla
+
+### Dashboard del Administrador
+<p align="center">
+  <img src="public/image/Dashbord admin.png" alt="Dashboard del Administrador" width="90%">
+</p>
+
+### Gestión de Usuarios
+<p align="center">
+  <img src="public/image/Gestion de usuarios.png" alt="Gestión de Usuarios" width="90%">
+</p>
+
+### Banco de Preguntas
+<p align="center">
+  <img src="public/image/Banco de preguntas.png" alt="Banco de Preguntas" width="90%">
+</p>
+
+### Auditoría del Sistema
+<p align="center">
+  <img src="public/image/Auditoria.png" alt="Auditoría del Sistema" width="90%">
+</p>
+
+---
+
 ## Tabla de Contenidos
 
 - [Características Principales](#-características-principales)
+- [Capturas de Pantalla](#-capturas-de-pantalla)
 - [Requisitos Previos](#requisitos-previos)
 - [Instalación](#instalación)
 - [Configuración del Entorno](#configuración-del-entorno)
