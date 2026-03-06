@@ -1,11 +1,38 @@
-# Colegio Max Planck — Sistema de Gestión Académica
+# Colegio Max Planck — Sistema de Gestión Académica Integral
 
-Sistema web de gestión académica para el Colegio Max Planck desarrollado con **Laravel 12** y **Tailwind CSS 4**. Permite administrar usuarios, cursos, matrículas, exámenes en línea y calificaciones con tres roles diferenciados: **Administrador**, **Docente** y **Estudiante**.
+### Plataforma web completa para colegios: Usuarios, Cursos, Matrículas, Exámenes Online con Temporizador, Calificaciones en Base 20, Auditoría de Accesos, Notificaciones por Correo, API REST y más.
+
+[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sqlite.org)
+[![Tests](https://img.shields.io/badge/Tests-57_passing-22C55E?style=for-the-badge&logo=checkmarx&logoColor=white)]()
+[![License](https://img.shields.io/badge/Licencia-Académica-blue?style=for-the-badge)]()
+
+---
+
+> **¿Buscas un sistema académico completo y funcional?** Este proyecto incluye todo lo que un colegio necesita: gestión de usuarios con 3 roles, matrículas, banco de preguntas con imágenes, exámenes en línea con temporizador e intentos configurables, calificaciones automáticas en base 20, auditoría completa de accesos y acciones, notificaciones por correo electrónico, API REST con autenticación por tokens, 57 tests automatizados con CI/CD, y diseño responsive. **Listo para clonar y usar.**
+
+### Características Principales
+
+| Característica | Descripción |
+|---|---|
+| **3 Roles (Admin, Docente, Estudiante)** | Cada rol con su propio dashboard, menú y permisos controlados por middleware y policies |
+| **Exámenes Online** | Temporizador en tiempo real, múltiples intentos, autocorrección, nota en base 20 |
+| **Calificaciones Automáticas** | Notas calculadas automáticamente con promedio por curso y estado aprobado/desaprobado |
+| **Auditoría Completa** | Log de accesos, cambios de rol, historial de acciones de cada usuario |
+| **Notificaciones por Correo** | Emails automáticos al publicar exámenes, confirmar matrículas y obtener resultados |
+| **Seguridad** | Bloqueo tras 5 intentos fallidos, cierre por inactividad, rate limiting, Sanctum |
+| **API REST** | 9 endpoints autenticados con Sanctum para integrar con apps móviles u otros sistemas |
+| **57 Tests + CI/CD** | Tests de cada módulo con GitHub Actions ejecutándose en cada push y PR |
+| **Diseño Responsive** | Interfaz adaptable a escritorio, tablet y móvil con menú hamburguesa |
+| **Instalación en minutos** | SQLite incluido, un solo comando para migrar y cargar datos de prueba |
 
 ---
 
 ## Tabla de Contenidos
 
+- [Características Principales](#-características-principales)
 - [Requisitos Previos](#requisitos-previos)
 - [Instalación](#instalación)
 - [Configuración del Entorno](#configuración-del-entorno)
