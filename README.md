@@ -96,7 +96,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-### 5. Crear la base de datos SQLite
+### 5. Crear la base de datos SQLite (Solo si no se a creado)
 
 ```bash
 # En Windows (PowerShell):
