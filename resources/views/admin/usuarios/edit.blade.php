@@ -38,10 +38,10 @@
                 <div class="flex items-center gap-4 mb-6 p-4 bg-primary/5 rounded-sm border-2 border-gray-300">
                     @if ($user->foto_perfil)
                         <img src="{{ asset('storage/' . $user->foto_perfil) }}" alt="Foto"
-                            class="w-16 h-16 rounded-full object-cover border-4 border-primary shadow-lg">
+                            class="w-16 h-16 rounded-full object-cover border-2 border-primary shadow-lg">
                     @else
                         <div
-                            class="w-16 h-16 rounded-full from-primary to-primary-dark flex items-center justify-center text-xl font-bold text-accent border-4 border-white shadow-lg">
+                            class="w-16 h-16 rounded-full from-primary to-primary flex items-center justify-center text-xl font-bold text-accent bg-primary shadow-lg">
                             {{ strtoupper(substr($user->nombres, 0, 1)) }}{{ strtoupper(substr($user->apellidos, 0, 1)) }}
                         </div>
                     @endif
