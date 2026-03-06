@@ -2,19 +2,19 @@
 @section('contenido')
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="text-3xl font-bold text-primary mb-1">Apoderados</h1>
-            <p class="text-gray-600">{{ $estudiante->nombreCompleto() }}</p>
+            <h1 class="text-2xl font-bold text-primary">Apoderados</h1>
+            <em class="text-gray-600 text-sm">{{ $estudiante->nombreCompleto() }}</em>
         </div>
         <div class="flex gap-3">
             <a href="{{ route('admin.apoderados.crear', $estudiante) }}"
-                class="flex items-center gap-2 bg-primary text-accent px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all shadow-md">
+                class="flex items-center gap-2 bg-primary text-accent px-4 py-2 rounded-sm text-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
                 Agregar Apoderado
             </a>
             <a href="{{ route('admin.usuarios') }}"
-                class="flex items-center gap-2 bg-white border-2 border-primary text-primary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary hover:text-accent transition-all shadow-md">
+                class="flex items-center gap-2 bg-white border-2 border-primary text-primary px-4 py-2 rounded-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -23,19 +23,20 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-lg border-2 border-primary/20 overflow-hidden">
+    <div class="bg-white rounded-sm shadow-sm border-2 border-gray-300 overflow-hidden">
         <table class="w-full text-sm">
-            <thead class=" from-primary to-primary/80">
+            <thead class=" from-primary to-primary border-b-2 border-gray-300 ">
                 <tr>
-                    <th class="p-4 text-left font-bold text-accent">Nombre Completo</th>
-                    <th class="p-4 text-left font-bold text-accent">DNI</th>
-                    <th class="p-4 text-left font-bold text-accent">Teléfono</th>
-                    <th class="p-4 text-left font-bold text-accent">Email</th>
-                    <th class="p-4 text-left font-bold text-accent">Parentesco</th>
-                    <th class="p-4 text-left font-bold text-accent">Acciones</th>
+                    <th class="p-4 text-left font-bold text-primary text-xs">Nombre Completo</th>
+                    <th class="p-4 text-left font-bold text-primary text-xs">DNI</th>
+                    <th class="p-4 text-left font-bold text-primary text-xs">Teléfono</th>
+                    <th class="p-4 text-left font-bold text-primary text-xs">Email</th>
+                    <th class="p-4 text-left font-bold text-primary text-xs">Parentesco</th>
+                    <th class="p-4 text-left font-bold text-primary text-xs">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
+                
                 @forelse ($apoderados as $a)
                     <tr class="hover:bg-primary/5 transition-all">
                         <td class="p-4 font-medium text-gray-800">{{ $a->nombre_completo }}</td>
@@ -67,12 +68,12 @@
                 @empty
                     <tr>
                         <td colspan="6" class="p-12 text-center">
-                            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor"
+                            <svg class="w-8 h-8 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
-                            <p class="text-gray-500 font-medium text-lg">No hay apoderados registrados</p>
+                            <p class="text-gray-500 font-medium text-xs">No hay apoderados registrados</p>
                         </td>
                     </tr>
                 @endforelse

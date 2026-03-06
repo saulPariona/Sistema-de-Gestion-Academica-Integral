@@ -62,6 +62,9 @@ Route::middleware(['auth', 'registrar.acceso'])->group(function () {
 
         Route::get('/estudiantes/{estudiante}/apoderados', [ApoderadoController::class, 'index'])->name('admin.apoderados');
         Route::get('/estudiantes/{estudiante}/apoderados/crear', [ApoderadoController::class, 'create'])->name('admin.apoderados.crear');
+        Route::get('/apoderados/{apoderado}/editar', [ApoderadoController::class, 'edit'])->name('admin.apoderados.editar');
+        Route::put('/apoderados/{apoderado}', [ApoderadoController::class, 'update'])->name('admin.apoderados.actualizar');
+        Route::delete('/apoderados/{apoderado}', [ApoderadoController::class, 'destroy'])->name('admin.apoderados.eliminar');
         Route::post('/apoderados', [ApoderadoController::class, 'store'])->name('admin.apoderados.guardar');
 
         Route::get('/calificaciones', [CalificacionController::class, 'index'])->name('admin.calificaciones');
