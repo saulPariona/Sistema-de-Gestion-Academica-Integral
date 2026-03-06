@@ -98,7 +98,7 @@ Si usas **XAMPP**, estas extensiones ya vienen habilitadas. Si usas PHP standalo
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/TU_USUARIO/ColegioMaxPlanck.git
+git clone https://github.com/saulPariona/Sistema-de-Gestion-Academica-Integral.git
 cd ColegioMaxPlanck
 ```
 
@@ -121,7 +121,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-### 5. Crear la base de datos SQLite
+### 5. Crear la base de datos SQLite (Solo si no se a creado)
 
 ```bash
 # En Windows (PowerShell):
